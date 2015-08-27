@@ -1,0 +1,29 @@
+# Makefile
+
+#the Fortran compiler to create object files
+FC            = mpif90
+#the Fortran flags to create object files
+FCFLAGS      = -I/usr/local/netcdf/include -I/usr/local/include
+#the C-compiler to create object files
+CC            = gcc
+#the C flags to create object files
+CCFLAGS       = -O 
+
+#the Fortran compiler to create executable
+LD            = $(FC)
+#the Fortran flags to create executable
+LDFLAGS       = -L/usr/local/netcdf/lib -L/usr/local/lib -lnetcdf -lnetcdff -lcurl -limf -lm
+EXTRALIBS     = 
+
+# Rules
+
+.c.o:
+	$(CC) -c $*.c $(CCFLAGS) 
+
+.f90.o:
+	$(FC) -c $*.f90 $(FCFLAGS) 
+
+.f.o:
+	$(FC) -c $*.f $(FCFLAGS) 
+
+
