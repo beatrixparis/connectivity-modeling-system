@@ -2,7 +2,7 @@
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_ibio.f90                                                      *
 !* Last Modified: 2011-07-22                                                *
-!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris  * 
+!* Code contributors: Judith Helgers, Ana Vaz, Dan Holstein, Claire Paris   * 
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
