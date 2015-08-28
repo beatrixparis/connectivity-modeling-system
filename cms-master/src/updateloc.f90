@@ -3,7 +3,7 @@
 !* File : updateloc.f90                                                     *
 !* Last Modified: 2011-07-22                                                *
 !* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris, * 
-!*                    Erik van Sebille                                      *
+!*                    Ana Carolina Vaz                                      *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
