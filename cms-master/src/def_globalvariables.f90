@@ -48,7 +48,7 @@ MODULE globalvariables
 
 !runconf.list + ibm.list
  integer (kind=int_kind)       :: nnests, timeStep, outputFreq, ibioTimestep, turbTimestep, &
-                                  settlementStart, larvaStart,tstStart, orientStart, &
+                                  larvaStart,tstStart, orientStart, &
                                   loopfilesstartyear, loopfilesstartmonth, loopfilesstartday, &
                                   loopfilesendyear, loopfilesendmonth, loopfilesendday, restartwritefreq
  integer (kind=int8_kind)      :: timeMax, total_seconds, UAx, VAx, WAx, QAx 
@@ -61,7 +61,7 @@ MODULE globalvariables
                                   agrid=.true., withibm, AxUsed(4), notmove, strata ! needed for cktidalmovement
  real (kind = real_kind)       :: dens_particle, diam_particle, horDiff(max_nests)=-1.,vertDiff(max_nests)=-1., &
                                   horDiffOrient, halflife, maxDistance,orientAbility,swimmingSpeedHatch, &
-                                  swimmingSpeedSettle, mixedlayerwmax
+                                  swimmingSpeedSettle, mixedlayerwmax, settlementStart
  logical (kind=log_kind)       :: nextFile(4)
 
 !inputfiles
