@@ -21,7 +21,6 @@
 !* Public License along with this program.                                  *
 !* If not, see <http://www.gnu.org/licenses/>.                              *
 !****************************************************************************
-
 SUBROUTINE writerestartfile(locname, startR, endR, time_t)
 
  USE mod_kinds
@@ -41,27 +40,31 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
  restartname = "restart_"//trim(locname)//".bin"
  print *,'Writing restart file'
  CALL get_unit(iunit_restart)
- open (unit=iunit_restart,file=trim(filescratch)//trim(restartname),status="unknown",form="unformatted")
+ open (unit=iunit_restart,file=trim(filescratch)//trim(restartname),status="unknown", form="unformatted")
 
  write(iunit_restart) time_t, startR, endR
  
  DO r=startR,endR
-  write(iunit_restart) particle(r)%id, particle(r)%num_rel, particle(r)%seconds, particle(r)%day, & 
-       particle(r)%month, particle(r)%year, particle(r)%start, particle(r)%ilon, particle(r)%ilat, &
-       particle(r)%idepth, particle(r)%rel_loc_name
+  write(iunit_restart) particle(r)%id, particle(r)%num_rel, &
+  particle(r)%seconds, particle(r)%day, particle(r)%month, &
+  particle(r)%year, particle(r)%start, particle(r)%ilon, &
+  particle(r)%ilat, particle(r)%idepth, particle(r)%rel_loc_name
   DO n=1, particle(r)%num_rel
    IF (withibm) THEN
-    write(iunit_restart) particle(r)%dist(n), particle(r)%nlon(n), particle(r)%nlat(n), particle(r)%ndepth(n), &
-          particle(r)%old_lonDist(n), particle(r)%old_latDist(n), particle(r)%diam(n), particle(r)%density(n), &
-          particle(r)%halflife(n), particle(r)%layer(n), particle(r)%move(n), particle(r)%flag(n,1), &
-          particle(r)%flag(n,2), particle(r)%flag(n,3), particle(r)%flag(n,4), particle(r)%flag(n,5), &
-          particle(r)%flag(n,6), particle(r)%flag(n,7), particle(r)%flag(n,8), particle(r)%flag(n,9), &
-          particle(r)%flag(n,10)
+    write(iunit_restart) particle(r)%dist(n), particle(r)%nlon(n), &
+    particle(r)%nlat(n), particle(r)%ndepth(n), particle(r)%old_lonDist(n), &
+    particle(r)%old_latDist(n), particle(r)%diam(n), particle(r)%density(n), &
+    particle(r)%halflife(n), particle(r)%layer(n), particle(r)%move(n), &
+    particle(r)%flag(n,1), particle(r)%flag(n,2), particle(r)%flag(n,3), &
+    particle(r)%flag(n,4), particle(r)%flag(n,5), particle(r)%flag(n,6), &
+    particle(r)%flag(n,7), particle(r)%flag(n,8), particle(r)%flag(n,9), &
+    particle(r)%flag(n,10)
    ELSE
-    write(iunit_restart) particle(r)%nlon(n), particle(r)%nlat(n), particle(r)%ndepth(n), &
-          particle(r)%move(n), particle(r)%flag(n,1), particle(r)%flag(n,2), particle(r)%flag(n,3), &
-          particle(r)%flag(n,4), particle(r)%flag(n,5), particle(r)%flag(n,6), particle(r)%flag(n,7), & 
-          particle(r)%flag(n,8), particle(r)%flag(n,9), particle(r)%flag(n,10)
+    write(iunit_restart) particle(r)%nlon(n), particle(r)%nlat(n), &
+    particle(r)%ndepth(n), particle(r)%move(n), particle(r)%flag(n,1), &
+    particle(r)%flag(n,2), particle(r)%flag(n,3), particle(r)%flag(n,4), &
+    particle(r)%flag(n,5), particle(r)%flag(n,6), particle(r)%flag(n,7), & 
+    particle(r)%flag(n,8), particle(r)%flag(n,9), particle(r)%flag(n,10)
    ENDIF
   ENDDO
  ENDDO
@@ -70,7 +73,6 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
  END SUBROUTINE writerestartfile
 
 !**************************************************************
-
  SUBROUTINE readrestartfile(locname,startR,endR,time_t)
 
  USE mod_kinds
@@ -81,8 +83,8 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
 
  IMPLICIT NONE
 
- character(Len=*),intent(in)         :: locname
- integer (kind=int8_kind), intent(out) :: time_t
+ character(Len=*),intent(in)          :: locname
+ integer (kind=int8_kind), intent(out):: time_t
  integer (kind=int_kind), intent(out) :: startR, endR
  integer (kind=int_kind) :: r, n
  character(char_len)     :: rfname
@@ -90,27 +92,31 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
  restartname = "restart_"//trim(locname)//".bin"
  print *,'Restarting from file' 
  CALL get_unit(iunit_restart)
- open (unit=iunit_restart,file=trim(filescratch)//trim(restartname),status="unknown",form="unformatted")
+ open (unit=iunit_restart, file=trim(filescratch)//trim(restartname), status="unknown", form="unformatted")
 
  read(iunit_restart) time_t, startR, endR
 
  DO r=startR, endR
-  read(iunit_restart) particle(r)%id, particle(r)%num_rel, particle(r)%seconds, particle(r)%day, & 
-       particle(r)%month, particle(r)%year, particle(r)%start, particle(r)%ilon, particle(r)%ilat, &
-       particle(r)%idepth, particle(r)%rel_loc_name
+  read(iunit_restart) particle(r)%id, particle(r)%num_rel, &
+  particle(r)%seconds, particle(r)%day, particle(r)%month, &
+  particle(r)%year, particle(r)%start, particle(r)%ilon, &
+  particle(r)%ilat, particle(r)%idepth, particle(r)%rel_loc_name
   DO n=1, particle(r)%num_rel
    IF (withibm) THEN
-    read(iunit_restart) particle(r)%dist(n), particle(r)%nlon(n), particle(r)%nlat(n), particle(r)%ndepth(n), &
-          particle(r)%old_lonDist(n), particle(r)%old_latDist(n), particle(r)%diam(n), particle(r)%density(n), &
-          particle(r)%halflife(n), particle(r)%layer(n), particle(r)%move(n), particle(r)%flag(n,1), &
-          particle(r)%flag(n,2), particle(r)%flag(n,3), particle(r)%flag(n,4), particle(r)%flag(n,5), &
-          particle(r)%flag(n,6), particle(r)%flag(n,7), particle(r)%flag(n,8), particle(r)%flag(n,9), &
-          particle(r)%flag(n,10)
+    read(iunit_restart) particle(r)%dist(n), particle(r)%nlon(n), &
+    particle(r)%nlat(n), particle(r)%ndepth(n), particle(r)%old_lonDist(n), &
+    particle(r)%old_latDist(n), particle(r)%diam(n), particle(r)%density(n), &
+    particle(r)%halflife(n), particle(r)%layer(n), particle(r)%move(n), &
+    particle(r)%flag(n,1), particle(r)%flag(n,2), particle(r)%flag(n,3), &
+    particle(r)%flag(n,4), particle(r)%flag(n,5), particle(r)%flag(n,6), &
+    particle(r)%flag(n,7), particle(r)%flag(n,8), particle(r)%flag(n,9), &
+    particle(r)%flag(n,10)
    ELSE
-    read(iunit_restart) particle(r)%nlon(n), particle(r)%nlat(n), particle(r)%ndepth(n), &
-          particle(r)%move(n), particle(r)%flag(n,1), particle(r)%flag(n,2), particle(r)%flag(n,3), &
-          particle(r)%flag(n,4), particle(r)%flag(n,5), particle(r)%flag(n,6), particle(r)%flag(n,7), &
-          particle(r)%flag(n,8), particle(r)%flag(n,9), particle(r)%flag(n,10)
+    read(iunit_restart) particle(r)%nlon(n), particle(r)%nlat(n), &
+    particle(r)%ndepth(n), particle(r)%move(n), particle(r)%flag(n,1), &
+    particle(r)%flag(n,2), particle(r)%flag(n,3), particle(r)%flag(n,4), &
+    particle(r)%flag(n,5), particle(r)%flag(n,6), particle(r)%flag(n,7), &
+    particle(r)%flag(n,8), particle(r)%flag(n,9), particle(r)%flag(n,10)
    ENDIF
   ENDDO
  ENDDO
@@ -121,5 +127,3 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
  END SUBROUTINE readrestartfile
 
 !**************************************************************
-
-

@@ -60,7 +60,6 @@ SUBROUTINE nc_create(ncfname,xmax,ymax,zmax,source,lon,lat,depth, units,ncId,tim
 !create the file
  CALL ncheck(nf90_create(trim(ncfname),or(nf90_clobber,nf90_64bit_offset),ncId),ncfname)
 
-
 !create dimensions
  CALL ncheck(nf90_def_dim(ncId, 'Longitude',xmax,xDim),ncfname)
  CALL ncheck(nf90_def_dim(ncId, 'Latitude',ymax,yDim),ncfname)
@@ -72,7 +71,6 @@ SUBROUTINE nc_create(ncfname,xmax,ymax,zmax,source,lon,lat,depth, units,ncId,tim
   CALL ncheck(nf90_put_att(ncId,nf90_global,'source',source),ncfname)
  ENDIF
 
- 
 !define variables
  CALL ncheck(nf90_def_var(ncId,"Longitude",nf90_float,(/ xDim /),xVar),ncfname)
  CALL ncheck(nf90_def_var(ncId,"Latitude",nf90_float,(/ yDim /),yVar),ncfname)
@@ -295,11 +293,11 @@ END SUBROUTINE nc_read2d
 !**************************************************************
 
 !read variable 1d from netcdf file (real)
-SUBROUTINE nc_read1d(ncfname, ncId, varname, values,nx,start)
+SUBROUTINE nc_read1d(ncfname, ncId, varname, values, nx, start)
  integer  (kind=int_kind), intent(in) :: ncId,nx
  character (len=*), intent(in)        :: ncfname, varname
  integer  (kind=int_kind), intent(in),optional   :: start(1)
- real  (kind=real_kind),dimension(nx),intent(out):: values
+ real  (kind=real_kind), dimension(nx), intent(out):: values
 
  real (kind=real_kind)     :: scalefactor
  integer  (kind=int_kind)  :: varId, sfpresent
@@ -568,5 +566,3 @@ END SUBROUTINE nc_att
 !**************************************************************
 
 END MODULE mod_nciorw
-
-

@@ -151,13 +151,13 @@ SUBROUTINE stateout_trajfile_netcdf(n,r,run_time,time_t,exitCode,startR)
  ilat=particle(r)%ilat
  idepth=particle(r)%idepth
  IF ((buoyancy) .or. (diffpart)) THEN
-  diam=particle(r)%diam(n)
-  dens=particle(r)%density(n)
-  temp=particle(r)%temp(n)
-  saln=particle(r)%saln(n)
+   diam=particle(r)%diam(n)
+   dens=particle(r)%density(n)
+   temp=particle(r)%temp(n)
+   saln=particle(r)%saln(n)
  ELSE
-  diam=-1
-  dens=-1
+   diam=-1
+   dens=-1
  ENDIF
  poly = particle(r)%id
  locname = particle(r)%rel_loc_name
@@ -185,12 +185,12 @@ SUBROUTINE stateout_trajfile_netcdf(n,r,run_time,time_t,exitCode,startR)
 
 !set the first temperature to NaN (because it's not know yet)
  IF (outputtemp .and. run_time .eq. 0) THEN
-      temp = 2.0**100
+   temp = 2.0**100
  ENDIF
 
 !set the first salinity to NaN (because it's not know yet)
  IF (outputsaln .and. run_time .eq. 0) THEN
-      saln = 2.0**100
+   saln = 2.0**100
  ENDIF
 
 !calculate releasedate
@@ -241,7 +241,6 @@ SUBROUTINE stateout_trajfile_netcdf(n,r,run_time,time_t,exitCode,startR)
 END SUBROUTINE stateout_trajfile_netcdf
 
 !**************************************************************
-
 SUBROUTINE stateout_trajfile_ascii(n, r,run_time,exitCode)
  USE constants
  USE globalvariables
@@ -285,12 +284,12 @@ SUBROUTINE stateout_trajfile_ascii(n, r,run_time,exitCode)
       cdist = 0.
   ELSE
     CALL Distance_Sphere(particle(r)%old_lonDist(n), &
-      particle(r)%old_latDist(n),nlon,nlat, cdist)
+    particle(r)%old_latDist(n),nlon,nlat, cdist)
   ENDIF 
   particle(r)%dist(n) = particle(r)%dist(n) + cdist
   dist = particle(r)%dist(n)  
  ELSE
-  dist = -1
+   dist = -1
  ENDIF
 
 !calculate releasedate
@@ -299,29 +298,40 @@ SUBROUTINE stateout_trajfile_ascii(n, r,run_time,exitCode)
  relDate = dble(julian) + dble(sec)
     
 !write output  
- IF (buoyancy .or. massspawning) THEN
-   IF (polygon) THEN
-    write(iunit_traj,'(i8,1x,i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,F12.3,1x,i2,1x,f12.3,1x,i4,1x,F6.1,1x,F9.7)') &
-      r, n,run_time,nlon,nlat,ndepth,dist,exitCode,relDate,poly,dens_part,diam_part
-   ELSE
-    write(iunit_traj,'(i8,1x,i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,F12.3,1x,i2,1x,f12.3,1x,F6.1,1x,F9.7)') &
-      r, n,run_time,nlon,nlat,ndepth,dist,exitCode,relDate,dens_part,diam_part
-   ENDIF
-
+ IF ((buoyancy .or. massspawning .or. diffpart) .and. (polygon)) THEN
+ !writes density and diameter, release polygon and pld given by temperature
+   write(iunit_traj, &
+ '(I8,1x, I8,1x, I12,1x, F8.3,1x, F8.3,1x, F8.3,1x, F12.3,1x, I2,1x, F12.3,1x, I6,1x, F6.1,1x, F10.7)') &
+   r, n, run_time, nlon, nlat, ndepth, dist, exitCode, relDate, &
+   poly, dens_part, diam_part 
+ ELSE IF ((buoyancy .or. massspawning .or. diffpart) .and. (polygon)) THEN
+ !writes density and diameter, and release polygon
+   write(iunit_traj, &
+ '(I8,1x, I8,1x, I12,1x, F8.3,1x, F8.3,1x, F8.3,1x, F12.3,1x, I2,1x, F12.3,1x, I6,1x, F6.1,1x, F10.7)') &
+   r, n, run_time, nlon, nlat, ndepth, dist, exitCode, relDate, &
+   poly, dens_part, diam_part 
+ ELSE IF (buoyancy .or. massspawning .or. diffpart) THEN
+ ! writes density and diameter
+   write(iunit_traj, &
+   '(I8,1x, I8,1x, I12,1x, F8.3,1x, F8.3,1x, F8.3,1x, F12.3,1x, I2,1x, F12.3,1x, F6.1,1x, F10.7)') &
+   r, n, run_time, nlon, nlat, ndepth, dist, exitCode, relDate, &
+   dens_part, diam_part
+ ELSE IF (polygon) THEN
+ ! writes release polygon
+   write(iunit_traj, &
+   '(i8,1x, I8,1x, I12,1x, F8.3,1x, F8.3,1x, F8.3,1x, F12.3,1x, I2,1x, F12.3,1x, I6)') &
+   r, n, run_time, nlon, nlat, ndepth, dist, exitCode, relDate, &
+   poly 
+ ELSE IF (withibm) THEN
+ ! writes distance and reldate
+   write(iunit_traj, &
+   '(i8,1x,i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,F12.3,1x,i2,1x,f12.3)') &
+   r, n, run_time, nlon, nlat, ndepth, dist, exitCode, relDate
  ELSE
-   IF (polygon) THEN
-    write(iunit_traj,'(i8,1x,i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,F12.3,1x,i2,1x,f12.3,1x,i4)') &
-      r, n,run_time,nlon,nlat,ndepth,dist,exitCode,relDate, poly
-   ELSE
-     IF (withibm) THEN
-      write(iunit_traj,'(i8,1x,i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,F12.3,1x,i2,1x,f12.3)') &
-        r, n,run_time,nlon,nlat,ndepth,dist,exitCode,relDate
-     ELSE
-      write(iunit_traj,'(i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,i2)') &
-        r,run_time,nlon,nlat,ndepth,exitCode
-     ENDIF
-   ENDIF
- ENDIF 
+ ! only writes default output - time, position and exitCode
+   write(iunit_traj,'(i8,1x,i12,1x,F8.3,1x,F8.3,1x,F8.3,1x,i2)') &
+   r, run_time, nlon, nlat, ndepth, exitCode
+ ENDIF  
 
 !save current lon and lat
  IF (withibm) THEN
@@ -332,13 +342,11 @@ SUBROUTINE stateout_trajfile_ascii(n, r,run_time,exitCode)
 END SUBROUTINE stateout_trajfile_ascii
 
 !**************************************************************
-
 SUBROUTINE stateout_confile(r, retentionPoly, yearStart, monthStart, dayStart, &
                             yearEnd, monthEnd, dayEnd, run_time, depthEnd)
  USE constants
  USE globalvariables
  USE mod_kinds
-
 
  IMPLICIT NONE
 
@@ -355,13 +363,11 @@ SUBROUTINE stateout_confile(r, retentionPoly, yearStart, monthStart, dayStart, &
 END SUBROUTINE stateout_confile
 
 !**************************************************************
-!**************************************************************
 SUBROUTINE stateout_confile_strata(r, retentionPoly, yearStart, monthStart, dayStart, &
                             yearEnd, monthEnd, dayEnd, run_time, depthEnd, strataEnd)
  USE constants
  USE globalvariables
  USE mod_kinds
-
 
  IMPLICIT NONE
 
@@ -370,14 +376,9 @@ SUBROUTINE stateout_confile_strata(r, retentionPoly, yearStart, monthStart, dayS
  integer (kind=int_kind),intent(in)   :: r, retentionPoly, yearEnd, monthEnd, dayEnd, &
                                          yearStart, monthStart, dayStart, strataEnd
   
-
- write(iunit_con,'(I5,1x,I5,1x,I5,1x,I2,1x,I2,1x,I12,1x,f6.1,1x,I5,1x,I2,1x,I2,1x,I2,1x,I2)') & 
+ write(iunit_con, '(I5,1x,I5,1x,I5,1x,I2,1x,I2,1x,I12,1x,f6.1,1x,I5,1x,I2,1x,I2,1x,I2,1x,I2)') & 
      particle(r)%id,retentionPoly, yearEnd, monthEnd, dayEnd, run_time, depthEnd, & 
      yearStart, monthStart, dayStart, particle(r)%strataStart, strataEnd
 
 END SUBROUTINE stateout_confile_strata
-
 !**************************************************************
-
-
-

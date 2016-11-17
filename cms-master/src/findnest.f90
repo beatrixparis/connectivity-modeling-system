@@ -1,3 +1,4 @@
+
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : findnest.f90                                                      *
@@ -34,7 +35,6 @@ subroutine findnest(lon,lat,depth,ngrid,r,n)
 
  implicit none
 
-
  real (kind = real_kind),intent(in)  :: lon,lat,depth
  integer (kind=int_kind),intent(out) :: ngrid
 
@@ -57,156 +57,148 @@ subroutine findnest(lon,lat,depth,ngrid,r,n)
  ngrid = -1
  nvertices = 5
 
- do i=1, nnests
-
-  xstart = nests(i)%lon(1,1,1)
-  ystart = nests(i)%lat(1,1,1)
-  zstart = nests(i)%depth(1,1)
-  zend = nests(i)%depth(1,nests(i)%kdm(1)) 
-  if (nests(i)%orthogrid) then
-   xend = nests(i)%lon(1,nests(i)%idm(1),1)
-   yend = nests(i)%lat(1,nests(i)%jdm(1),1)
-  else
-   xend = nests(i)%lon(1,nests(i)%idm(1),nests(i)%jdm(1))
-   yend = nests(i)%lat(1,nests(i)%idm(1),nests(i)%jdm(1))
-  endif
-  do ax=2,QAx
-   if (axUsed(ax) .eqv. .true. ) then
-    xstart = max(xstart,nests(i)%lon(ax,1,1))
-    ystart = max(ystart,nests(i)%lat(ax,1,1))
-    zstart = max(zstart,nests(i)%depth(ax,1))
-    zend = min(zend,nests(i)%depth(ax,nests(i)%kdm(1))) 
-    if (nests(i)%orthogrid) then
-     xend = min(xend,nests(i)%lon(ax,nests(i)%idm(ax),1))
-     yend = min(yend,nests(i)%lat(ax,nests(i)%jdm(ax),1))
-    else
-     xend = min(xend,nests(i)%lon(ax,nests(i)%idm(ax),nests(i)%jdm(ax)))
-     yend = min(yend,nests(i)%lat(ax,nests(i)%idm(ax),nests(i)%jdm(ax)))
-    endif
+ do i=1,nnests
+   xstart = nests(i)%lon(1,1,1)
+   ystart = nests(i)%lat(1,1,1)
+   zstart = nests(i)%depth(1,1)
+   zend = nests(i)%depth(1,nests(i)%kdm(1)) 
+   if (nests(i)%orthogrid) then
+     xend = nests(i)%lon(1,nests(i)%idm(1),1)
+     yend = nests(i)%lat(1,nests(i)%jdm(1),1)
+   else
+     xend = nests(i)%lon(1,nests(i)%idm(1),nests(i)%jdm(1))
+     yend = nests(i)%lat(1,nests(i)%idm(1),nests(i)%jdm(1))
    endif
-  enddo
-  if (xstart > xend) then
-   wrk_lon1(1)=xstart
-   wrk_lon1(2)=360
-   wrk_lon1(3)=360
-   wrk_lon1(4)=xstart
-   wrk_lon1(5)=wrk_lon1(1)
-   wrk_lon2(1)=0
-   wrk_lon2(2)=xend
-   wrk_lon2(3)=xend
-   wrk_lon2(4)=0
-   wrk_lon2(5)=wrk_lon2(1)
-   twoParts = .true.
-  else
-   wrk_lon(1)=xstart
-   wrk_lon(2)=xend
-   wrk_lon(3)=xend
-   wrk_lon(4)=xstart
-   wrk_lon(5)=wrk_lon(1)
-   twoParts = .false.
-  endif
-  wrk_lat(1)=ystart
-  wrk_lat(2)=ystart
-  wrk_lat(3)=yend
-  wrk_lat(4)=yend
-  wrk_lat(5)=wrk_lat(1)
+   do ax=2,QAx
+     if (axUsed(ax) .eqv. .true. ) then
+       xstart = max(xstart,nests(i)%lon(ax,1,1))
+       ystart = max(ystart,nests(i)%lat(ax,1,1))
+       zstart = max(zstart,nests(i)%depth(ax,1))
+       zend = min(zend,nests(i)%depth(ax,nests(i)%kdm(1))) 
+       if (nests(i)%orthogrid) then
+         xend = min(xend,nests(i)%lon(ax,nests(i)%idm(ax),1))
+         yend = min(yend,nests(i)%lat(ax,nests(i)%jdm(ax),1))
+       else
+         xend = min(xend,nests(i)%lon(ax,nests(i)%idm(ax),nests(i)%jdm(ax)))
+         yend = min(yend,nests(i)%lat(ax,nests(i)%idm(ax),nests(i)%jdm(ax)))
+       endif
+     endif
+   enddo
 
+   if (xstart > xend) then
+      wrk_lon1(1)=xstart
+      wrk_lon1(2)=360
+      wrk_lon1(3)=360
+      wrk_lon1(4)=xstart
+      wrk_lon1(5)=wrk_lon1(1)
+      wrk_lon2(1)=0
+      wrk_lon2(2)=xend
+      wrk_lon2(3)=xend
+      wrk_lon2(4)=0
+      wrk_lon2(5)=wrk_lon2(1)
+      twoParts = .true.
+   else
+     wrk_lon(1)=xstart
+     wrk_lon(2)=xend
+     wrk_lon(3)=xend
+     wrk_lon(4)=xstart
+     wrk_lon(5)=wrk_lon(1)
+     twoParts = .false.
+   endif
+   wrk_lat(1)=ystart
+   wrk_lat(2)=ystart
+   wrk_lat(3)=yend
+   wrk_lat(4)=yend
+   wrk_lat(5)=wrk_lat(1)
 
-! calculate i,j,k position of particle
-  call lonlat2ij (lat,lon, depth, i, size(nests(i)%lon(1,:,:)), size(nests(i)%lat(1,:,:)),&
+!  calculate i,j,k position of particle
+   call lonlat2ij (lat,lon, depth, i, size(nests(i)%lon(1,:,:)), size(nests(i)%lat(1,:,:)),&
    size(nests(i)%depth(1,:)),periodicbc,r,n,grid_i,grid_j,grid_k)
-
-  gridi = int(grid_i(1))
-  gridj = int(grid_j(1))
-
-  checkSurrounding = .false.
-  if ((gridi .gt. 2) .and. (gridj .gt. 2) .and. (gridi .lt. (nests(i)%idm(1)-2)) .and. (gridj .lt. (nests(i)%jdm(1)-2))) then
-   checkSurrounding = .true.
-  endif
-
-  if (twoParts) then
-!  grid exists of 2 parts
-
-!  get size of nest
-   sizeNest = 360 - xstart + xend + abs(ystart - yend)
-   if (sizeNest .gt. sizeLargest) then
-    sizeLargest = sizeNest
-    largestNest = i
+   
+   gridi = int(grid_i(1))
+   gridj = int(grid_j(1))
+   checkSurrounding = .false.
+   if ((gridi .gt. 2) .and. (gridj .gt. 2) .and. (gridi .lt. (nests(i)%idm(1)-2)) .and. (gridj .lt. (nests(i)%jdm(1)-2))) then
+     checkSurrounding = .true.
    endif
-
-!  check if lon and lat are inside the nest
-   call pip (lon,lat, wrk_lon1, wrk_lat, nvertices, l1)
-   call pip (lon,lat, wrk_lon2, wrk_lat, nvertices, l2)
-
-   if (nests(i)%tilted .eqv. .false.) then 
-!   if nest is not tilted
-    if (((l1 >= 0) .OR. (l2>=0)) .and. (sizeNest < sizeNestOld)) then
-     if (depth >= zstart .and. depth<=zend) then 
-      if (nests(i)%dataExist) then
-        sizeNestOld = sizeNest
-        ngrid=i
-      endif
+   
+   if (twoParts) then
+!    grid exists of 2 parts
+!    get size of nest
+     sizeNest = 360 - xstart + xend + abs(ystart - yend)
+     if (sizeNest .gt. sizeLargest) then
+       sizeLargest = sizeNest
+       largestNest = i
      endif
-    endif
-   else
-!  if nest is is tilted
-    if (((l1 >= 0) .OR. (l2>=0)) .and. (sizeNest < sizeNestOld) .and. (checkSurrounding .eqv. .true.)) then
-     if  ((nests(i)%mask(gridi-1,gridj-1) .eq. 1).and. &
+!    check if lon and lat are inside the nest
+     call pip (lon,lat, wrk_lon1, wrk_lat, nvertices, l1)
+     call pip (lon,lat, wrk_lon2, wrk_lat, nvertices, l2)
+     if (nests(i)%tilted .eqv. .false.) then 
+!      if nest is not tilted
+       if (((l1 >= 0) .OR. (l2>=0)) .and. (sizeNest < sizeNestOld)) then
+         if (depth >= zstart .and. depth<=zend) then 
+           if (nests(i)%dataExist) then
+             sizeNestOld = sizeNest
+             ngrid=i
+           endif
+         endif
+       endif
+     else
+!      if nest is is tilted
+       if (((l1 >= 0) .OR. (l2>=0)) .and. (sizeNest < sizeNestOld) .and. (checkSurrounding .eqv. .true.)) then
+         if  ((nests(i)%mask(gridi-1,gridj-1) .eq. 1).and. &
           (nests(i)%mask(gridi-1,gridj+2) .eq. 1).and. &
           (nests(i)%mask(gridi+2,gridj-1) .eq. 1).and. &
           (nests(i)%mask(gridi+2,gridj+2) .eq. 1)) then
-      if ( depth >= zstart .and. depth<=zend) then 
-       if (nests(i)%dataExist) then
-        sizeNestOld = sizeNest
-        ngrid=i
-       endif
+            if ( depth >= zstart .and. depth<=zend) then 
+              if (nests(i)%dataExist) then
+                sizeNestOld = sizeNest
+                ngrid=i
+              endif
+            endif
+          endif
+        endif    
       endif
-     endif
-    endif    
-   endif
-  else 
-!  grid exists of 1 part
-
-!  get size of nest
-   sizeNest = abs(xstart - xend) + abs(ystart - yend)
-   if (sizeNest .gt. sizeLargest) then
-    sizeLargest = sizeNest
-    largestNest = i
-   endif
-
-!  check if lon and lat are inside the nest
-   call pip (lon,lat, wrk_lon, wrk_lat, nvertices, l)
-
-   if (nests(i)%tilted .eqv. .false.) then 
-!  if nest is not tilted
-    if ((l >= 0) .and. (sizeNest < sizeNestOld)) then
-     if (depth >= zstart .and. depth<=zend) then 
-      if (nests(i)%dataExist) then
-       sizeNestOld = sizeNest
-       ngrid=i
+    else  
+!     grid exists of 1 part
+!     get size of nest
+      sizeNest = abs(xstart - xend) + abs(ystart - yend)
+      if (sizeNest .gt. sizeLargest) then
+        sizeLargest = sizeNest
+        largestNest = i
       endif
-     endif
-    endif
-   else
-!   if nest is is tilted
-    if ( (l >= 0) .and. (sizeNest < sizeNestOld) .and. (checkSurrounding .eqv. .true.) ) then
-     if ( (nests(i)%mask(gridi-1,gridj-1) .eq. 1).and. &
-          (nests(i)%mask(gridi-1,gridj+2) .eq. 1).and. &
-          (nests(i)%mask(gridi+2,gridj-1) .eq. 1).and. &
-          (nests(i)%mask(gridi+2,gridj+2) .eq. 1)) then
-      if ( depth >= zstart .and. depth<=zend) then 
-       if (nests(i)%dataExist) then
-        sizeNestOld = sizeNest
-        ngrid=i
-       endif
+!     check if lon and lat are inside the nest
+      call pip (lon, lat, wrk_lon, wrk_lat, nvertices, l)
+      if (nests(i)%tilted .eqv. .false.) then 
+!     if nest is not tilted
+        if ((l >= 0) .and. (sizeNest < sizeNestOld)) then
+          if (depth >= zstart .and. depth<=zend) then 
+            if (nests(i)%dataExist) then
+              sizeNestOld = sizeNest
+              ngrid=i
+            endif
+          endif
+        endif
+      else
+!       if nest is is tilted
+        if ( (l >= 0) .and. (sizeNest < sizeNestOld) .and. (checkSurrounding .eqv. .true.) ) then
+          if ( (nests(i)%mask(gridi-1,gridj-1) .eq. 1).and. &
+            (nests(i)%mask(gridi-1,gridj+2) .eq. 1).and. &
+            (nests(i)%mask(gridi+2,gridj-1) .eq. 1).and. &
+            (nests(i)%mask(gridi+2,gridj+2) .eq. 1)) then
+            if ( depth >= zstart .and. depth<=zend) then 
+              if (nests(i)%dataExist) then
+                sizeNestOld = sizeNest
+                ngrid=i
+              endif
+            endif
+          endif
+        endif  
       endif
-     endif
-    endif  
-   endif
-
-  endif ! end if:twoParts 
+    endif ! end if:twoParts 
+ 
  enddo !end loop: i=1, nnests
-        
+     
  if ((ngrid .eq. -1) .and. (periodicbc) .and. (lat .ge. ystart) .and. (lat .le. yend)) then
    zstart = nests(largestNest)%depth(1,1)
    zend = nests(largestNest)%depth(1,nests(largestNest)%kdm(1))  
@@ -216,4 +208,3 @@ subroutine findnest(lon,lat,depth,ngrid,r,n)
  endif
       
 end subroutine findnest
-

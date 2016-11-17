@@ -43,5 +43,3 @@ SUBROUTINE ncheck(istat, fname)
 END SUBROUTINE ncheck
 
 END MODULE mod_netcdf
-
-

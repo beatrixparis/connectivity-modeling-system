@@ -75,12 +75,13 @@ SUBROUTINE pip (x0, y0, x, y, n, in_out)
 
  in_out = -1
  DO i=1,n
-  j = i + 1
-  IF (j .gt. n) j = 1
-  IF ( ((y(i).gt.y0) .neqv. (y(j).gt.y0)) .and. &
-       ( x0 .lt. (x(j) -x(i)) * (y0 -y(i)) / (y(j) -y(i)) + x(i))) THEN 
-        in_out = in_out * (-1)
-  ENDIF
+   j = i + 1
+   IF (j .gt. n) j = 1
+   IF ((y(i).gt.y0) .neqv. (y(j).gt.y0)) THEN
+     IF ( x0 .lt. (x(j) -x(i)) * (y0 -y(i)) / (y(j) -y(i)) + x(i)) THEN 
+       in_out = in_out * (-1)
+     ENDIF
+   ENDIF 
  ENDDO
 
 END SUBROUTINE pip

@@ -20,7 +20,6 @@
 !* Public License along with this program.                                  *
 !* If not, see <http://www.gnu.org/licenses/>.                              *
 !****************************************************************************
-
 MODULE globalvariables
 
  USE mod_kinds  
@@ -47,21 +46,31 @@ MODULE globalvariables
  integer (kind=int8_kind)      :: saveTime
 
 !runconf.list + ibm.list
- integer (kind=int_kind)       :: nnests, timeStep, outputFreq, ibioTimestep, turbTimestep, &
-                                  larvaStart,tstStart, orientStart, &
-                                  loopfilesstartyear, loopfilesstartmonth, loopfilesstartday, &
-                                  loopfilesendyear, loopfilesendmonth, loopfilesendday, restartwritefreq
+ integer (kind=int_kind)       :: nnests, timeStep, outputFreq, ibioTimestep, &
+                                  turbTimestep, larvaStart,tstStart, orientStart, &
+                                  loopfilesstartyear, loopfilesstartmonth, &
+                                  loopfilesstartday, loopfilesendyear, &
+                                  loopfilesendmonth, loopfilesendday, &
+                                  restartwritefreq
  integer (kind=int8_kind)      :: timeMax, total_seconds, UAx, VAx, WAx, QAx 
  character(char_len)           :: releaseFilename,polyFilename,tideFilename, &
-                                  ibioFilename,diffpartFilename, fractionFilename, wvel_positive_direction, &
-                                  strataFilename, buoyancyFilename
- logical (kind=log_kind)       :: polygon, buoyancy, ibio,turb, mort, avoidcoast, diffpart, periodicbc, &
-                                  massSpawning, tidalMovement, backward, ascii, upperlevelsurface=.true., &
-                                  loopfiles, restartfromfile=.false., mixedlayerphysics=.false., &
-                                  agrid=.true., withibm, AxUsed(4), notmove, strata ! needed for cktidalmovement
- real (kind = real_kind)       :: dens_particle, diam_particle, horDiff(max_nests)=-1.,vertDiff(max_nests)=-1., &
-                                  horDiffOrient, halflife, maxDistance,orientAbility,swimmingSpeedHatch, &
-                                  swimmingSpeedSettle, mixedlayerwmax, settlementStart
+                                  ibioFilename,diffpartFilename, fractionFilename, &
+                                  wvel_positive_direction, strataFilename, &
+                                  buoyancyFilename
+ logical (kind=log_kind)       :: polygon, buoyancy, ibio,turb, mort, avoidcoast, &
+                                  diffpart, periodicbc, massSpawning, &
+                                  tidalMovement, backward, ascii, &
+                                  upperlevelsurface=.true., loopfiles, &
+                                  restartfromfile=.false., &
+                                  mixedlayerphysics=.false., agrid=.true., &
+                                  withibm, AxUsed(4), notmove, strata, &
+                                  writerestart=.false. ! needed for cktidalmovement
+ real (kind = real_kind)       :: dens_particle, diam_particle, &
+                                  horDiff(max_nests)=-1., vertDiff(max_nests)=-1., &
+                                  horDiffOrient, halflife, maxDistance, &
+                                  orientAbility, swimmingSpeedHatch, &
+                                  swimmingSpeedSettle, mixedlayerwmax, &
+                                  settlementStart
  logical (kind=log_kind)       :: nextFile(4)
 
 !inputfiles
@@ -71,6 +80,4 @@ MODULE globalvariables
 !other
  integer (kind=int_kind)       :: interpversion=1 !version of interpolation 
                                   !(1=tricubic; 2=new trilinear; 3=nonorthogonal)
-
 END MODULE globalvariables
-

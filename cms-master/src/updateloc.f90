@@ -1,4 +1,4 @@
-!****************************************************************************
+	!****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : updateloc.f90                                                     *
 !* Last Modified: 2011-07-22                                                *
@@ -21,8 +21,6 @@
 !* Public License along with this program.                                  *
 !* If not, see <http://www.gnu.org/licenses/>.                              *
 !****************************************************************************
-
-
 !calculate new lon,lat and depth with U-velocity, V-velocity and W-velocity
 SUBROUTINE updateloc(lon_old,lat_old,depth_old,u,v,w,flag,tmstp,lon_new,lat_new,depth_new,upperdepth)
 
@@ -90,5 +88,4 @@ SUBROUTINE updateloc(lon_old,lat_old,depth_old,u,v,w,flag,tmstp,lon_new,lat_new,
    ENDIF
   ENDIF
  ENDIF 
-END SUBROUTINE updateloc  
-
+END SUBROUTINE updateloc

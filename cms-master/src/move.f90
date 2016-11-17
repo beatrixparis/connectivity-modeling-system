@@ -96,13 +96,14 @@ SUBROUTINE move(startR, endR,time_t)
 !    ================== Runga Kutta Step 1 ==================
 !    check in which nest the particle is     
      CALL findnest(xold,yold,zold,ngrid,r,n)
-     upperdepth=max(nests(ngrid)%depth(UAx,1), nests(ngrid)%depth(VAx,1),nests(ngrid)%depth(WAx,1))
 !    IF particle is outside all nests then stop moving 
      IF (ngrid .eq. -1) THEN
       flag(7) = .True.
       goto 100
      ENDIF  
 
+     upperdepth=max(nests(ngrid)%depth(UAx,1),nests(ngrid)%depth(VAx,1),nests(ngrid)%depth(WAx,1))
+     
      IF (mixedlayerphysics) THEN
       CALL randdepthinmixedlayer (ngrid,xold,yold,zold,r,n)
      ENDIF
@@ -311,7 +312,7 @@ SUBROUTINE move(startR, endR,time_t)
         particle(r)%ndepth(n) = vertLayers(particle(r)%layer(n))
        ENDIF
       ELSE
-!      else give the particle his new depth position	   
+!      else give the particle its new depth position	   
        particle(r)%ndepth(n)=znew    
       ENDIF
 !     give the particle his new lon and lat position
@@ -352,6 +353,3 @@ SUBROUTINE move(startR, endR,time_t)
  ENDDO
 
 END SUBROUTINE move
-
-
-

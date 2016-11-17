@@ -72,9 +72,11 @@
        
 
 !calculate U-velocity
- CALL fld3_interp(grid_i(UAx),grid_j(UAx),grid_k(UAx),nests(ngrid)%idm(UAx),nests(ngrid)%jdm(UAx),nests(ngrid)%kdm(UAx), &
-      nests(ngrid)%uvel(:,:,:,firstFile:firstFile+n_weight-1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19, &
-      ngrid,value,fail,landFlag1)  
+ CALL fld3_interp(grid_i(UAx), grid_j(UAx), grid_k(UAx), nests(ngrid)%idm(UAx), &
+   nests(ngrid)%jdm(UAx), nests(ngrid)%kdm(UAx), &
+   nests(ngrid)%uvel(:,:,:,firstFile:firstFile+n_weight-1), &
+   nests(ngrid)%w(:,rk_step), n_weight, 2.0**19, &
+   ngrid, value, fail, landFlag1)  
  IF (fail .or. abs(value)>100.0) THEN
   u=0.0
  ELSE
@@ -83,9 +85,11 @@
  flag(1)=fail
 
 !calculate V-velocity
- CALL fld3_interp(grid_i(VAx),grid_j(VAx),grid_k(VAx),nests(ngrid)%idm(VAx),nests(ngrid)%jdm(VAx),nests(ngrid)%kdm(VAx), &
-      nests(ngrid)%vvel(:,:,:,firstFile:firstFile+n_weight-1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19, &
-      ngrid,value,fail,landFlag2)
+ CALL fld3_interp(grid_i(VAx), grid_j(VAx), grid_k(VAx), nests(ngrid)%idm(VAx), &
+   nests(ngrid)%jdm(VAx), nests(ngrid)%kdm(VAx), &
+   nests(ngrid)%vvel(:,:,:,firstFile:firstFile+n_weight-1), &
+   nests(ngrid)%w(:,rk_step), n_weight, 2.0**19, &
+   ngrid, value, fail, landFlag2)
  IF (fail .or. abs(value)>100.0) THEN
   v=0.0
  ELSE
@@ -117,9 +121,11 @@
   flag(3) = .false.
   w = 0.0
  ELSE  
-  CALL fld3_interp(grid_i(WAx),grid_j(WAx),grid_k(WAx),nests(ngrid)%idm(WAx),nests(ngrid)%jdm(WAx),nests(ngrid)%kdm(WAx), &
-       nests(ngrid)%wvel(:,:,:,firstFile:firstFile+n_weight-1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19, &
-       ngrid,value,fail,landFlag2)
+  CALL fld3_interp(grid_i(WAx), grid_j(WAx), grid_k(WAx), &
+    nests(ngrid)%idm(WAx), nests(ngrid)%jdm(WAx), nests(ngrid)%kdm(WAx), &
+    nests(ngrid)%wvel(:,:,:,firstFile:firstFile+n_weight-1), &
+    nests(ngrid)%w(:,rk_step), n_weight,2.0**19, &
+    ngrid, value, fail, landFlag2)
   IF (fail .or. abs(value)>100.0) THEN
    w=0.0
   ELSE
@@ -131,8 +137,11 @@
  IF (withibm) THEN
 !calculate Temperature, only necessary if buoyancy or mortality is used 
  IF ((buoyancy) .or. (mort) .or. (outputtemp)) THEN
-  CALL fld3_interp(grid_i(QAx),grid_j(QAx),grid_k(QAx),nests(ngrid)%idm(QAx),nests(ngrid)%jdm(QAx),nests(ngrid)%kdm(QAx), &
-       nests(ngrid)%temp(:,:,:,firstFile:firstFile+1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19,ngrid,value,fail,landFlag2)
+  CALL fld3_interp(grid_i(QAx), grid_j(QAx), grid_k(QAx), &
+    nests(ngrid)%idm(QAx), nests(ngrid)%jdm(QAx), nests(ngrid)%kdm(QAx), &
+    nests(ngrid)%temp(:,:,:,firstFile:firstFile+1), &
+    nests(ngrid)%w(:,rk_step), n_weight, 2.0**19, &
+    ngrid, value, fail, landFlag2)
   IF (fail) THEN
    t=0.0
   ELSE
@@ -146,8 +155,11 @@
 
 !Salinity will not be used in the rest of the cms so it is not calculated
  IF (outputsaln) THEN
-  CALL fld3_interp(grid_i(QAx),grid_j(QAx),grid_k(QAx),nests(ngrid)%idm(QAx),nests(ngrid)%jdm(QAx),nests(ngrid)%kdm(QAx), &
-       nests(ngrid)%saln(:,:,:,firstFile:firstFile+1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19,ngrid,value,fail,landFlag2)
+  CALL fld3_interp(grid_i(QAx), grid_j(QAx), grid_k(QAx), &
+    nests(ngrid)%idm(QAx), nests(ngrid)%jdm(QAx), nests(ngrid)%kdm(QAx), &
+    nests(ngrid)%saln(:,:,:,firstFile:firstFile+1), &
+    nests(ngrid)%w(:,rk_step), n_weight, 2.0**19, &
+    ngrid, value, fail, landFlag2)
   IF (fail) THEN
    s=0.0
   ELSE
@@ -161,8 +173,11 @@
 
 !calculate Density, only necessary if using buoyancy      
  IF (buoyancy) THEN
-  CALL fld3_interp(grid_i(QAx),grid_j(QAx),grid_k(QAx),nests(ngrid)%idm(QAx),nests(ngrid)%jdm(QAx),nests(ngrid)%kdm(QAx), &
-      nests(ngrid)%dens(:,:,:,firstFile:firstFile+n_weight-1),nests(ngrid)%w(rk_step,:),n_weight,2.0**19,ngrid,value,fail,landFlag2)
+  CALL fld3_interp(grid_i(QAx), grid_j(QAx), grid_k(QAx), &
+    nests(ngrid)%idm(QAx), nests(ngrid)%jdm(QAx), nests(ngrid)%kdm(QAx), &
+    nests(ngrid)%dens(:,:,:,firstFile:firstFile+n_weight-1), &
+    nests(ngrid)%w(:,rk_step), n_weight, 2.0**19, &
+    ngrid, value, fail, landFlag2)
   IF (fail)  THEN
    rho=0.0
   ELSE
@@ -173,7 +188,6 @@
   flag(6) = .false.
   rho = 0.0
  ENDIF
-
 
 !Adding buyancy component only if there is a t and rho    
  IF (buoyancy) THEN
@@ -190,21 +204,20 @@
 !if the sea surface height rises then the shrimp can move
 !if the sea surface height drops then the shrimp cannot move
  IF (tidalMovement) THEN
-  notmove = .false. 
-  IF (run_time .gt. (tstStart*secs_in_day)) THEN
-   CALL fld2d_interp(grid_i(QAx),grid_j(QAx),nests(ngrid)%idm(QAx),nests(ngrid)%jdm(QAx), &
-        nests(ngrid)%ssh(:,:,1),2.0**19,ngrid,ssh1,fail)
-   CALL fld2d_interp(grid_i(QAx),grid_j(QAx),nests(ngrid)%idm(QAx),nests(ngrid)%jdm(QAx), &
-        nests(ngrid)%ssh(:,:,2),2.0**19,ngrid,ssh2,fail)
-   IF (ssh1 .ge. ssh2) THEN
-    u = 0.0
-    v = 0.0
-    w = 0.0 
-    notmove = .true.
+   notmove = .false. 
+   IF (run_time .gt. (tstStart*secs_in_day)) THEN
+     CALL fld2d_interp(grid_i(QAx), grid_j(QAx), nests(ngrid)%idm(QAx), &
+       nests(ngrid)%jdm(QAx), nests(ngrid)%ssh(:,:,1), 2.0**19, ngrid, ssh1, fail)
+     CALL fld2d_interp(grid_i(QAx), grid_j(QAx), nests(ngrid)%idm(QAx), &
+       nests(ngrid)%jdm(QAx), nests(ngrid)%ssh(:,:,2), 2.0**19, ngrid, ssh2, fail)
+     IF (ssh1 .ge. ssh2) THEN
+       u = 0.0
+       v = 0.0
+       w = 0.0 
+       notmove = .true.
+     ENDIF
    ENDIF
-  ENDIF
  ENDIF
 
  ENDIF !withibm
 END SUBROUTINE
-

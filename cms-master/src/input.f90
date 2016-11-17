@@ -21,7 +21,6 @@
 !* Public License along with this program.                                  *
 !* If not, see <http://www.gnu.org/licenses/>.                              *
 !****************************************************************************
-
 !read files from modules if flag is turned on
 SUBROUTINE load_mod_input
 
@@ -77,11 +76,14 @@ SUBROUTINE load_runconf
  logical (kind=log_kind) :: file_exists
 
 !runconf.list
- namelist /runconf/nnests, timeMax,timeStep,outputFreq,releaseFilename, &
-    turb, horDiff, vertDiff, turbTimestep, periodicbc, avoidcoast, backward, &
-    ascii, upperlevelsurface, loopfiles, loopfilesstartyear, loopfilesstartmonth, &
+ namelist /runconf/nnests, timeMax, timeStep, &
+    outputFreq, releaseFilename, &
+    turb, horDiff, vertDiff, turbTimestep, &
+    periodicbc, avoidcoast, backward, ascii, &
+    upperlevelsurface, loopfiles, loopfilesstartyear, loopfilesstartmonth, &
     loopfilesstartday, loopfilesendyear, loopfilesendmonth, loopfilesendday, &
-    restartfromfile, restartwritefreq, mixedlayerphysics, mixedlayerwmax
+    writerestart, restartfromfile, restartwritefreq, &
+    mixedlayerphysics, mixedlayerwmax
 
  INQUIRE(FILE=trim(fileinput)//'runconf.list',EXIST=file_exists)
  IF (file_exists) THEN
@@ -306,31 +308,31 @@ SUBROUTINE load_release_info
   particle(i)%ndepth=depth
   particle(i)%num_rel = num_rel
   if (withibm) then
-   allocate(particle(i)%dist(num_rel))
-   IF ((buoyancy) .or. (diffpart)) THEN
-   allocate(particle(i)%diam(num_rel))
-   allocate(particle(i)%density(num_rel))
-   ENDIF
-   IF ((mort) .or. (diffpart)) THEN  
-   allocate(particle(i)%halflife(num_rel))
-   ENDIF
-   IF (ibio) THEN
-   allocate(particle(i)%layer(num_rel))
-   ENDIF  
-   allocate(particle(i)%temp(num_rel))
-   allocate(particle(i)%saln(num_rel))
-   allocate(particle(i)%old_lonDist(num_rel))
-   allocate(particle(i)%old_latDist(num_rel))
-   particle(i)%old_lonDist=lon
-   particle(i)%old_latDist=lat
-   particle(i)%dist=0.
+    allocate(particle(i)%dist(num_rel))
+    IF ((buoyancy) .or. (diffpart)) THEN
+      allocate(particle(i)%diam(num_rel))
+      allocate(particle(i)%density(num_rel))
+    ENDIF
+    IF ((mort) .or. (diffpart)) THEN  
+      allocate(particle(i)%halflife(num_rel))
+    ENDIF
+    IF (ibio) THEN
+      allocate(particle(i)%layer(num_rel))
+    ENDIF  
+    allocate(particle(i)%temp(num_rel))
+    allocate(particle(i)%saln(num_rel))
+    allocate(particle(i)%old_lonDist(num_rel))
+    allocate(particle(i)%old_latDist(num_rel))
+    particle(i)%old_lonDist=lon
+    particle(i)%old_latDist=lat
+    particle(i)%dist=0.
   endif
   if (mixedlayerphysics) then
-   allocate(particle(i)%inmld(num_rel))
+    allocate(particle(i)%inmld(num_rel))
   endif
   IF (particle(i)%num_rel .eq. 0) THEN
-   print *,'Error: the release file has at the column: number of releases a 0' 
-   stop
+    print *,'Error: the release file has at the column: number of releases a 0' 
+    stop
   ENDIF
     IF (strata) THEN
     CALL assign_strata_start(particle(i)%idepth,stratastart)
@@ -340,12 +342,12 @@ SUBROUTINE load_release_info
   particle(i)%month = month
   particle(i)%day = day
   particle(i)%seconds = seconds
-  particle(i)%move=.true. 
+  particle(i)%move=.true.
   particle(i)%start = 0.
   particle(i)%flag = .False.
   IF (ibio) THEN
-   call set_layer(particle(i)%idepth, layer)
-   particle(i)%layer = layer
+    call set_layer(particle(i)%idepth, layer)
+    particle(i)%layer = layer
   ENDIF
  ENDDO
 
@@ -357,11 +359,8 @@ SUBROUTINE load_release_info
 
 !close file
  call release_unit(iunit)
-
 !print *, "Finished loading release data" 
 !print *, "No of Release Locations = ", sze 
 
 END SUBROUTINE load_release_info
-
 !**************************************************************
-

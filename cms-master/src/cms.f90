@@ -2,9 +2,8 @@
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : cms.f90                                                           *
 !* Last Modified: 2011-07-22                                                *
-!* Code contributors: Claire B. Paris, Judith Helgers, Ana C. Vaz,          *
-!*                            and Andres Vidal                              *          
-!*                                                                          *
+!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris, * 
+!*                    Ana Carolina Vaz                                      *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
@@ -25,7 +24,7 @@
 
 PROGRAM CMS
 
- USE mpi !remove if not using mpi
+ USE MPI !remove if not using mpi
  USE globalvariables
  USE mod_random
  
@@ -35,6 +34,10 @@ PROGRAM CMS
  
  character(char_len)     :: filenumber
  integer (kind=int_kind) :: ierr, my_id, npes, number1, number2
+ logical (kind=log_kind) :: file_exists
+
+ my_id = 0 !used if not using mpi
+ npes = 1 !used if not using mpi
 
 !initialise MPI
  CALL MPI_INIT(ierr) !remove if not using mpi
@@ -42,11 +45,9 @@ PROGRAM CMS
  CALL MPI_COMM_RANK(MPI_COMM_WORLD, my_id, ierr) !remove if not using mpi
 !how many processors are there?
  CALL MPI_COMM_SIZE(MPI_COMM_WORLD, npes, ierr) !remove if not using mpi
-! my_id = 0 !use if not using mpi
-! npes = 1 !use if not using mpi
 
 !check which experiment to run
- IF (iargc() .eq. 0) THEN
+ IF (command_argument_count() .eq. 0) THEN
     print *, "You have to enter the experiment number/name you want to run"
     stop
  ENDIF
@@ -59,6 +60,14 @@ PROGRAM CMS
  number2 = abs(mod((number2*(my_id+1)),30081))
  CALL random_initialize (number1,number2)
  
+!check whether input runconf file exists 
+ write(fileinput,'(A,A,A)') 'input_',trim(filenumber), '/'
+ INQUIRE(FILE=trim(fileinput)//'runconf.list',EXIST=file_exists)
+ IF (file_exists .eqv. .false.) THEN
+  print *, "Error: File ", trim(fileinput)//'runconf.list'," does not exist"
+  stop
+ ENDIF
+
 !create directories
  write(filedir,'(A,A)') 'expt_',trim(filenumber)
  CALL make_dir (adjustl(trim(filedir)),Len(adjustl(trim(filedir))))
@@ -68,18 +77,13 @@ PROGRAM CMS
  CALL make_dir(adjustl(trim(fileoutput)),Len(adjustl(trim(fileoutput))))
  write(filescratch,'(A,A,A)') 'expt_',trim(filenumber),'/SCRATCH/'
  CALL make_dir(adjustl(trim(filescratch)),Len(adjustl(trim(filescratch))))
- write(fileinput,'(A,A,A)') 'input_',trim(filenumber), '/'
 
 !load input files
- CALL load_runconf
  CALL load_ibm
+ CALL load_runconf
  CALL load_mod_input
- IF (nearField) THEN
-   CALL load_release_info_nearfield
- ELSE
-   CALL load_release_info
- ENDIF
- 
+ CALL load_release_info
+
 !move the particles
  CALL loop(my_id, npes)
 

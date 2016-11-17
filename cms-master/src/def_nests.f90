@@ -20,8 +20,6 @@
 !* Public License along with this program.                                  *
 !* If not, see <http://www.gnu.org/licenses/>.                              *
 !****************************************************************************
-
-
 MODULE def_nests
  USE mod_kinds         
 
@@ -29,17 +27,19 @@ MODULE def_nests
 
  TYPE grid
 
-  integer (kind=int_kind)             :: tdm,time_step,tstart_yy, tstart_mm, tstart_dd, &
+  integer (kind=int_kind)             :: tdm,time_step,tstart_yy, tstart_mm, &
+                                         tstart_dd, &
                                          tend_yy, tend_mm, tend_dd
   integer (kind=int_kind),allocatable :: mask(:,:), idm(:), jdm(:), kdm(:)
   logical (kind=log_kind)             :: dataExist, tilted, orthogrid
   real (kind = real_kind)             :: fill_value
-  real (kind = real_kind),allocatable :: w(:,:), lon(:,:,:), lat(:,:,:), depth(:,:), uvel(:,:,:,:), vvel(:,:,:,:), &
-                                         wvel(:,:,:,:), temp(:,:,:,:), saln(:,:,:,:), dens(:,:,:,:), ssh(:,:,:), &
+  real (kind = real_kind),allocatable :: w(:,:), lon(:,:,:), lat(:,:,:), &
+                                         depth(:,:), uvel(:,:,:,:), vvel(:,:,:,:), &
+                                         wvel(:,:,:,:), temp(:,:,:,:), saln(:,:,:,:), &
+                                         dens(:,:,:,:), ssh(:,:,:), &
                                          mld(:,:,:), angle(:,:,:)
   character(char_len)                 :: fnameold, time_units, uname, vname, wname, &
                                          densname, salnname, tempname
-
  END TYPE grid
 
 END MODULE def_nests

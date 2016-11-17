@@ -58,7 +58,7 @@ SUBROUTINE loop(my_id, npes)
 !calculate number of release locations
  rfname = adjustl(trim(fileinput))//trim(releaseFilename)
  CALL getSize(rfname,sze)
-
+ 
 !calculate which lines of the release file my_id has to run
  IF (npes .gt. sze) THEN
   print *, "Error: You USE more processors than the number of lines in the release file. ", &
@@ -161,7 +161,7 @@ SUBROUTINE loop(my_id, npes)
  maxparticlestart=0
  DO r=startR,endR
    CALL jd(particle(r)%year,particle(r)%month,particle(r)%day,julian)
-   IF ((julian.gt.lastfilejulian) .or. (julian.lt.firstfilejulian)) THEN
+   IF ((julian .gt. lastfilejulian) .or. (julian .lt. firstfilejulian)) THEN
      particle(r)%move(:)=.false.
    ELSE
      IF (backward) THEN
@@ -206,13 +206,14 @@ SUBROUTINE loop(my_id, npes)
        ELSE
          CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-5,startR)
        ENDIF
-       print *, 'Warning: no data for start time of particle',r,'so it will not be integrated.'
+       print *, 'Warning: no data for start time of particle ', r ,' so it will not be integrated.'
        IF (nests(1)%time_units == "months") THEN
          print *, '(In "monthly" mode, particles can only start on or after second available month)'
        ENDIF
      ELSE
-!      check if startposition is inside the grid   
+!      check if startposition is inside the grid  
        CALL findnest(particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n)
+       !print *, "particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n", particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n
 !      if startposition is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
          IF (ascii) THEN
@@ -261,197 +262,194 @@ SUBROUTINE loop(my_id, npes)
 
 !for each timestep
  day_loop: DO time_t=time_t_first,total_seconds,timeStep
- 
-! write restart data every restartwritefreq time.
-  IF (mod(time_t,restartwritefreq).eq.0.) THEN
-    write(filename,'(A,I0)') 'file_',my_id+1
-    CALL writerestartfile(trim(filename), startR, endR, time_t)
-  ENDIF
-
-! load the datafiles
-  CALL getphysicaldata(time_t,basedate)
-
-! check if there are datafiles for the given date
-  timeFlag = .true.
-  DO n=1, nnests
-    IF (nests(n)%dataExist) THEN
-      timeFlag = .false.
-    ENDIF
-  ENDDO
- 
-! if there are no datafiles for the given date then
-! stop else move the particles
-  IF (timeFlag) THEN
-    DO r=startR,endR
-      IF (particle(r)%start .lt. time_t) THEN
-        DO n=1,particle(r)%num_rel
-          particle(r)%flag(n,10)=.True.
-        ENDDO
-      ENDIF
-    ENDDO
-  ELSE
-!   move all the particles
-    CALL move(startR, endR,time_t)
-  ENDIF 
-
-!print location and status of particles to output file
-  DO r=startR,endR  
-    IF (particle(r)%start .lt. time_t) THEN
-      DO n=1, particle(r)%num_rel
-        IF (particle(r)%move(n) .eqv. .true.) THEN
-          run_time = time_t - particle(r)%start
-!         Particle leaving model area
-          IF(particle(r)%flag(n,7)) THEN
-            IF (ascii) THEN
-              CALL stateout_trajfile_ascii(n,r,run_time,-1)
-            ELSE
-              CALL stateout_trajfile_netcdf(n,r, &
-              run_time+mod(outputFreq-mod(run_time,outputFreq), outputFreq), &
-              time_t,-1, startR)
-            ENDIF
-            particle(r)%move(n) = .false.
-            goto 50
-          ENDIF
-     
-!         Particle is on land
-          IF(particle(r)%flag(n,1) .and. particle(r)%flag(n,2)) THEN  
-            IF (ascii) THEN
-              CALL stateout_trajfile_ascii(n,r,run_time,-2)
-            ELSE   
-              CALL stateout_trajfile_netcdf(n,r, &
-              run_time+ mod(outputFreq - mod(run_time,outputFreq), outputFreq), &
-              time_t,-2, startR)
-            ENDIF
-            particle(r)%move(n) = .false.
-            goto 50
-          ENDIF
-
-!         Particle is outside time domain
-          IF (particle(r)%flag(n,10)) THEN
-            IF (ascii) THEN
-              CALL stateout_trajfile_ascii(n,r,run_time,-5)
-            ELSE
-              CALL stateout_trajfile_netcdf(n,r, &
-              run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-              time_t, -5, startR)
-            ENDIF
-            particle(r)%move(n) = .false.
-            goto 50
-         ENDIF
-
-!        Particle is dead
-         IF (mort) THEN
-           IF (particle(r)%flag(n,8)) THEN
-             IF (ascii) THEN
-               CALL stateout_trajfile_ascii(n,r,run_time,-3)
-             ELSE
-               CALL stateout_trajfile_netcdf(n,r, &
-               run_time+mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-               time_t,-3, startR)
-            ENDIF
-           particle(r)%move(n) = .false.
-           goto 50   
-         ENDIF
-       ENDIF
-
-!      check if particle is inside a polygon
-       IF (polygon) THEN
-         IF (run_time .ge.(settlementStart*secs_in_day)) THEN
-           CALL jd(particle(r)%year, particle(r)%month,particle(r)%day,julian) 
-           IF (strata) THEN
-             print *, "got to check strata time_t", time_t
-             CALL check_strata(particle(r)%ndepth(n),strataValue)
-	         IF (strataValue > 0) THEN
-               CALL check_reef_recruitment_strata(particle(r)%nlon(n), &
-               particle(r)%nlat(n), particle(r)%ndepth(n),run_time, &
-               julian,r,pflag,strataValue)
-             ELSE
-!	         Because the particles does not enter the loop unless it's in a strata, set pflag to -1 for particles outside strata
-   	           pflag=-1
-             ENDIF
-          ELSE
-             CALL check_reef_recruitment(particle(r)%nlon(n),particle(r)%nlat(n), &
-             particle(r)%ndepth(n),run_time,julian,r,pflag)
-          ENDIF
-             
-          IF (pflag == 1) THEN
-!           Particle is inside a polygon
-            IF (ascii) THEN
-              CALL stateout_trajfile_ascii(n,r,run_time,-4)
-            ELSE
-              CALL stateout_trajfile_netcdf(n,r, &
-              run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-              time_t,-4,startR)
-            ENDIF
-            particle(r)%move(n)= .false.
-            goto 50
-          ENDIF
-        ENDIF
-      ENDIF
-
-!     particle that is still moving
-!     only write output data every outputFreq time.
-      IF (mod(run_time,outputFreq).eq.0.) THEN
-        IF (ascii) THEN
-          CALL stateout_trajfile_ascii(n,r,run_time,0)
-        ELSE
-          CALL stateout_trajfile_netcdf(n,r,run_time,time_t,0,startR)
-        ENDIF
-      ENDIF
-
-!     particle is not allowed to move is release date is not yet reached
-      IF (run_time .ge. timeMax) THEN
-        particle(r)%move(n) = .false.
-      ENDIF
-    ENDIF
-50  continue
-  ENDDO ! END loop: n=1, particle(r)%num_rel
-
-!If larvaStart is passed then change from buoyancy to ibio
- IF (massSpawning) THEN
-   IF ((eggTimePassed(r) .eqv. .false.) .and. (run_time .ge. (larvaStart*secs_in_day))) THEN
-     eggTimePassed(r) = .true.
-     DO n=1,particle(r)%num_rel
-       CALL set_layer(particle(r)%ndepth(n), layer)
-       particle(r)%layer(n) = layer
-     ENDDO
+!  write restart data every restartwritefreq time.
+   IF ((writerestart) .and. (mod(time_t,restartwritefreq).eq.0.)) THEN
+     write(filename,'(A,I0)') 'file_',my_id+1
+     CALL writerestartfile(trim(filename), startR, endR, time_t)
    ENDIF
- ENDIF
-ENDIF
 
-ENDDO !end loop: r=startR,endR
-
- IF (buoyancy) THEN
-   !check if time_t (simulation time) is equal to times at which dens
-   !and diam should change, defined by buoyancy_time (user defined times)
-   IF ((time_t .gt. buoyancy_time) .and. (buoyancy_index .lt. numBuoyancy)) THEN
-     buoyancy_index=buoyancy_index+1
-     buoyancy_time=buoyancyTime(buoyancy_index)
-     DO r=startR,endR
-       DO n=1, particle(r)%num_rel
-         CALL random_real(MinDiam(buoyancy_index),MaxDiam(buoyancy_index),particle(r)%diam(n))
-         CALL random_real(MinDens(buoyancy_index),MaxDens(buoyancy_index),particle(r)%density(n))
-       ENDDO
-     ENDDO
-   ENDIF
- ENDIF
-
-! check if all particles are finished
- allFinished = .true.
- DO r=startR,endR 
-   DO n=1,particle(r)%num_rel
-     IF (particle(r)%start .ge. time_t) THEN
-       allFinished = .false.
-     ENDIF
-     IF (particle(r)%move(n) .eqv. .true.) THEN
-       allFinished = .false.
+!  load the datafiles
+   CALL getphysicaldata(time_t,basedate)
+!  check if there are datafiles for the given date
+   timeFlag = .true.
+   DO n=1, nnests
+     IF (nests(n)%dataExist) THEN
+       timeFlag = .false.
      ENDIF
    ENDDO
- ENDDO
- IF (allFinished) THEN
-   exit day_loop
- ENDIF
  
+!  if there are no datafiles for the given date then
+!  stop else move the particles
+   IF (timeFlag) THEN
+     DO r=startR,endR
+       IF (particle(r)%start .lt. time_t) THEN
+         DO n=1,particle(r)%num_rel
+           particle(r)%flag(n,10)=.True.
+         ENDDO
+       ENDIF
+     ENDDO
+   ELSE
+!    move all the particles
+     CALL move(startR, endR,time_t)
+   ENDIF 
+
+!  print location and status of particles to output file
+   DO r=startR,endR  
+     IF (particle(r)%start .lt. time_t) THEN
+       DO n=1, particle(r)%num_rel
+         IF (particle(r)%move(n) .eqv. .true.) THEN
+           run_time = time_t - particle(r)%start
+!          Particle leaving model area
+           IF(particle(r)%flag(n,7)) THEN
+             IF (ascii) THEN
+               CALL stateout_trajfile_ascii(n,r,run_time,-1)
+             ELSE
+               CALL stateout_trajfile_netcdf(n,r, &
+               run_time+mod(outputFreq-mod(run_time,outputFreq), outputFreq), &
+               time_t,-1, startR)
+             ENDIF
+             particle(r)%move(n) = .false.
+             goto 50
+           ENDIF
+     
+!          Particle is on land
+           IF(particle(r)%flag(n,1) .and. particle(r)%flag(n,2)) THEN  
+             IF (ascii) THEN
+               CALL stateout_trajfile_ascii(n,r,run_time,-2)
+             ELSE   
+               CALL stateout_trajfile_netcdf(n,r, &
+               run_time+ mod(outputFreq - mod(run_time,outputFreq), outputFreq), &
+               time_t,-2, startR)
+             ENDIF
+             particle(r)%move(n) = .false.
+             goto 50
+           ENDIF
+
+!          Particle is outside time domain
+           IF (particle(r)%flag(n,10)) THEN
+             IF (ascii) THEN
+               CALL stateout_trajfile_ascii(n,r,run_time,-5)
+             ELSE
+               CALL stateout_trajfile_netcdf(n,r, &
+               run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+               time_t, -5, startR)
+             ENDIF
+             particle(r)%move(n) = .false.
+             goto 50
+           ENDIF
+
+!          Particle is dead
+           IF (mort) THEN
+             IF (particle(r)%flag(n,8)) THEN
+               IF (ascii) THEN
+                 CALL stateout_trajfile_ascii(n,r,run_time,-3)
+               ELSE
+                 CALL stateout_trajfile_netcdf(n,r, &
+                 run_time+mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+                 time_t,-3, startR)
+               ENDIF
+               particle(r)%move(n) = .false.
+               goto 50   
+             ENDIF
+           ENDIF
+
+!          check if particle is inside a polygon
+	       IF (polygon) THEN
+	         IF (run_time .ge.(settlementStart*secs_in_day)) THEN
+	           CALL jd(particle(r)%year, particle(r)%month,particle(r)%day,julian) 
+	           IF (strata) THEN
+	             CALL check_strata(particle(r)%ndepth(n),strataValue)
+	             IF (strataValue > 0) THEN
+                   CALL check_reef_recruitment_strata(particle(r)%nlon(n), &
+                   particle(r)%nlat(n), particle(r)%ndepth(n),run_time, &
+                   julian,r,pflag,strataValue)
+	             ELSE
+!	               Because the particles does not enter the loop unless 
+!                  it's in a strata, set pflag to -1 for particles outside strata
+	   	           pflag=-1
+	             ENDIF
+	          ELSE
+	             CALL check_reef_recruitment(particle(r)%nlon(n),particle(r)%nlat(n), &
+	             particle(r)%ndepth(n),run_time,julian,r,pflag)
+	          ENDIF
+             
+	          IF (pflag == 1) THEN
+	!           Particle is inside a polygon
+	            IF (ascii) THEN
+	              CALL stateout_trajfile_ascii(n,r,run_time,-4)
+	            ELSE
+	              CALL stateout_trajfile_netcdf(n,r, &
+	              run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+	              time_t,-4,startR)
+	            ENDIF
+	            particle(r)%move(n)= .false.
+	            goto 50
+	          ENDIF
+            ENDIF
+          ENDIF
+
+!         particle that is still moving
+!         only write output data every outputFreq time.
+	      IF (mod(run_time,outputFreq).eq.0.) THEN
+	        IF (ascii) THEN
+	          CALL stateout_trajfile_ascii(n,r,run_time,0)
+	        ELSE
+	          CALL stateout_trajfile_netcdf(n,r,run_time,time_t,0,startR)
+	        ENDIF
+	      ENDIF
+!         particle is not allowed to move is release date is not yet reached
+          IF (run_time .ge. timeMax) THEN
+            particle(r)%move(n) = .false.
+          ENDIF
+        ENDIF
+50      continue
+      ENDDO ! END loop: n=1, particle(r)%num_rel
+
+!     If larvaStart is passed then change from buoyancy to ibio
+      IF (massSpawning) THEN
+        IF ((eggTimePassed(r) .eqv. .false.) .and. (run_time .ge. (larvaStart*secs_in_day))) THEN
+          eggTimePassed(r) = .true.
+          DO n=1,particle(r)%num_rel
+            CALL set_layer(particle(r)%ndepth(n), layer)
+            particle(r)%layer(n) = layer
+          ENDDO
+        ENDIF
+      ENDIF
+      
+    ENDIF
+  ENDDO !end loop: r=startR,endR
+
+  IF (buoyancy) THEN
+    !check if time_t (simulation time) is equal to times at which dens
+    !and diam should change, defined by buoyancy_time (user defined times)
+    IF ((time_t .gt. buoyancy_time) .and. (buoyancy_index .lt. numBuoyancy)) THEN
+      buoyancy_index=buoyancy_index+1
+      buoyancy_time=buoyancyTime(buoyancy_index)
+      DO r=startR,endR
+        DO n=1, particle(r)%num_rel
+          CALL random_real(MinDiam(buoyancy_index),MaxDiam(buoyancy_index),particle(r)%diam(n))
+          CALL random_real(MinDens(buoyancy_index),MaxDens(buoyancy_index),particle(r)%density(n))
+        ENDDO
+      ENDDO
+    ENDIF
+  ENDIF
+
+! check if all particles are finished
+  allFinished = .true.
+  DO r=startR,endR 
+    DO n=1,particle(r)%num_rel
+      IF (particle(r)%start .ge. time_t) THEN
+        allFinished = .false.
+      ENDIF
+      IF (particle(r)%move(n) .eqv. .true.) THEN
+        allFinished = .false.
+      ENDIF
+    ENDDO
+  ENDDO
+  IF (allFinished) THEN
+    exit day_loop
+  ENDIF
+  
  ENDDO day_loop
 
 !close output file

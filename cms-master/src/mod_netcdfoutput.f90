@@ -27,30 +27,23 @@ MODULE mod_netcdfoutput
  USE mod_nciorw
  USE constants
 
-
  IMPLICIT NONE
 
  integer (kind=int_kind), save :: &
      ncId, locVar,timeVar,lonVar, latVar, depthVar, tempVar, salnVar,  mldVar, &
      distanceVar, statusVar, releaseVar, polyVar, densVar, sizeVar
 
-
-
  CONTAINS
 
 !**************************************************************
-
 !create netcdf file for outputfile
-
 SUBROUTINE output_create(ncfname, numTime)   
 
  USE globalvariables
 
  character (len=*), intent(in)         :: ncfname
  integer  (kind=int_kind), intent(in)  :: numTime
-
  integer  (kind=int_kind)              :: partDim, timeDim
-
 
 !create the file
  CALL ncheck(nf90_create(trim(ncfname),nf90_clobber,ncId),ncfname)
@@ -60,7 +53,6 @@ SUBROUTINE output_create(ncfname, numTime)
  CALL ncheck(nf90_def_dim(ncId, 'time',numTime,timeDim),ncfname) 
 
 !add variables to netcdf file
-
 !add time
  CALL ncheck(nf90_def_var(ncId,"time",nf90_int,(/ timeDim /),timeVar),trim(ncfname))
  CALL ncheck(nf90_put_att(ncId,timeVar,"units",'seconds'),ncfname)
@@ -92,33 +84,33 @@ SUBROUTINE output_create(ncfname, numTime)
 
  IF (withibm) THEN
 !add distance
-  CALL ncheck(nf90_def_var(ncId,"distance",nf90_float,(/ timeDim,partDim /),distanceVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,distanceVar,"units",'kilometer'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,distanceVar,"long_name",'Cumulative distance'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,distanceVar,"_FillValue",2.**100),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"distance",nf90_float,(/ timeDim, partDim /), distanceVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,distanceVar,"units",'kilometer'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,distanceVar,"long_name",'Cumulative distance'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,distanceVar,"_FillValue",2.**100),ncfname)
  ENDIF
 
  IF (outputtemp) THEN
 !add interpolated temperature
-  CALL ncheck(nf90_def_var(ncId,"temperature",nf90_float,(/ timeDim,partDim /),tempVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,tempVar,"units",'degC'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,tempVar,"long_name",'interpolated along-track temperature'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,tempVar,"_FillValue",2.**100),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"temperature",nf90_float, (/ timeDim, partDim /), tempVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,tempVar,"units",'degC'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,tempVar,"long_name",'interpolated along-track temperature'), ncfname)
+   CALL ncheck(nf90_put_att(ncId,tempVar,"_FillValue",2.**100),ncfname)
  ENDIF
 
  IF (outputsaln) THEN
 !add interpolated salinity
-  CALL ncheck(nf90_def_var(ncId,"salinity",nf90_float,(/ timeDim,partDim /),salnVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,salnVar,"units",'psu'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,salnVar,"long_name",'interpolated along-track salinity'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,salnVar,"_FillValue",2.**100),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"salinity",nf90_float,(/ timeDim,partDim /),salnVar),trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,salnVar,"units",'psu'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,salnVar,"long_name",'interpolated along-track salinity'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,salnVar,"_FillValue",2.**100),ncfname)
  ENDIF
 
  IF (mixedlayerphysics) THEN
 !add whether in mixed layer
-  CALL ncheck(nf90_def_var(ncId,"inmld",nf90_int,(/ timeDim,partDim /),mldVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,mldVar,"long_name",'In mixed layer'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,mldVar,"_FillValue",100),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"inmld",nf90_int,(/ timeDim, partDim /), mldVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,mldVar,"long_name",'In mixed layer'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,mldVar,"_FillValue",100),ncfname)
  ENDIF
 
 !add exitcode
@@ -132,19 +124,18 @@ SUBROUTINE output_create(ncfname, numTime)
 
 !add release polygon if flag polygon is turned on
  IF (polygon) THEN
-  CALL ncheck(nf90_def_var(ncId,"releasepolygon",nf90_int,(/ partDim /),polyVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,polyVar,"long_name",'Number of release polygon'),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"releasepolygon",nf90_int,(/ partDim /), polyVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,polyVar,"long_name",'Number of release polygon'), ncfname)
  ENDIF
 
 !only output density and diameter of particle if buoyancy or massspawning is turned on
  IF (buoyancy .or. massSpawning .or. diffpart) THEN
-  CALL ncheck(nf90_def_var(ncId,"density",nf90_float,(/ partDim /),densVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,densVar,"units",'kg/m3'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,densVar,"long_name",'Density of particle'),ncfname)
-
-  CALL ncheck(nf90_def_var(ncId,"diameter",nf90_float,(/ partDim /),sizeVar),trim(ncfname))
-  CALL ncheck(nf90_put_att(ncId,sizeVar,"units",'meter'),ncfname)
-  CALL ncheck(nf90_put_att(ncId,sizeVar,"long_name",'Diameter of particle') ,ncfname)
+   CALL ncheck(nf90_def_var(ncId,"density",nf90_float,(/ partDim /), densVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,densVar,"units",'kg/m3'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,densVar,"long_name",'Density of particle'),ncfname)
+   CALL ncheck(nf90_def_var(ncId,"diameter",nf90_float,(/ partDim /),sizeVar), trim(ncfname))
+   CALL ncheck(nf90_put_att(ncId,sizeVar,"units",'meter'),ncfname)
+   CALL ncheck(nf90_put_att(ncId,sizeVar,"long_name",'Diameter of particle') ,ncfname)
  ENDIF
 
 !add global attributes
@@ -153,65 +144,73 @@ SUBROUTINE output_create(ncfname, numTime)
  CALL ncheck(nf90_put_att(ncId,nf90_global,"timeStep", timeStep),ncfname)
  CALL ncheck(nf90_put_att(ncId,nf90_global,"releaseFilename", releaseFilename),ncfname)
  IF (turb) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"turb", ".true."),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"horDiff", horDiff(1:nnests)),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"vertDiff", vertDiff(1:nnests)),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"turbTimestep", turbTimestep),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"turb", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"horDiff", horDiff(1:nnests)),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"vertDiff", vertDiff(1:nnests)),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"turbTimestep", turbTimestep),ncfname)
  ENDIF
+ 
  IF (periodicbc) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"periodicbc", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"periodicbc", ".true."),ncfname)
  ENDIF
+ 
  IF (avoidcoast) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"avoidcoast", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"avoidcoast", ".true."),ncfname)
  ENDIF
+ 
  IF (backward) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"backward", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"backward", ".true."),ncfname)
  ENDIF
+ 
  IF (buoyancy) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"buoyancy", ".true."),ncfname)
-  IF (diffpart) THEN
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpart", ".true."),ncfname)
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpartFilename", diffpartFilename),ncfname)
-  ELSE
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"dens_particle", dens_particle),ncfname)
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"diam_particle", diam_particle),ncfname)  
-  ENDIF 
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"buoyancy", ".true."),ncfname)
+   IF (diffpart) THEN
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpart", ".true."),ncfname)
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpartFilename", diffpartFilename), ncfname)
+   ELSE
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"dens_particle", dens_particle),ncfname)
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"diam_particle", diam_particle),ncfname)  
+   ENDIF 
  ENDIF
+ 
  IF (polygon) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"polygon", ".true."),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"polyFilename", polyFilename),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"settlementStart", settlementStart),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"polygon", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"polyFilename", polyFilename),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"settlementStart", settlementStart),ncfname)
  ENDIF
+ 
  IF (ibio) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"ibio", ".true."),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"ibioFilename", ibioFilename),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"ibioTimestep", ibioTimestep),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"ibio", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"ibioFilename", ibioFilename),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"ibioTimestep", ibioTimestep),ncfname)
  ENDIF
+ 
  IF (mort) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"mort", ".true."),ncfname)
-  IF (diffpart) THEN
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpart", ".true."),ncfname)
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpartFilename", diffpartFilename),ncfname)
-  ELSE
-   CALL ncheck(nf90_put_att(ncId,nf90_global,"halflife", halflife),ncfname)
-  ENDIF 
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"mort", ".true."),ncfname)
+   IF (diffpart) THEN
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpart", ".true."),ncfname)
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"diffpartFilename", diffpartFilename), ncfname)
+   ELSE
+     CALL ncheck(nf90_put_att(ncId,nf90_global,"halflife", halflife),ncfname)
+   ENDIF 
  ENDIF
+ 
  IF (massSpawning) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"massSpawning", ".true."),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"larvaStart", larvaStart),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"massSpawning", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"larvaStart", larvaStart),ncfname)
  ENDIF
+ 
  IF (tidalMovement) THEN
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"tidalMovement", ".true."),ncfname)
-  CALL ncheck(nf90_put_att(ncId,nf90_global,"tstStart", tstStart),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"tidalMovement", ".true."),ncfname)
+   CALL ncheck(nf90_put_att(ncId,nf90_global,"tstStart", tstStart),ncfname)
  ENDIF
+ 
 !end define mode
-
  CALL ncheck(nf90_enddef(ncid),trim(ncfname))
 
 END SUBROUTINE output_create
 
 !**************************************************************
-
 !write location of particle to outputfile
 SUBROUTINE output_write_loc(ncfname, particleId, timeId,locnr, time, &
      lon, lat, depth,distance, stat,date,poly, dens, diam, temp, saln, sync, &
@@ -220,45 +219,54 @@ SUBROUTINE output_write_loc(ncfname, particleId, timeId,locnr, time, &
  character (len=*), intent(in)         :: ncfname
  integer  (kind=int_kind), intent(in)  :: particleId, timeId
  integer  (kind=int_kind), intent(in)  :: locnr, stat, poly, inmld
- real (kind = real_kind), intent(in)   :: lon, lat, depth, distance,dens, diam, temp, saln
+ real (kind = real_kind), intent(in)   :: lon, lat, depth, distance, dens, diam, temp, saln
  double precision, intent(in)          :: date
  integer (kind=int8_kind), intent(in)  :: time
  logical (kind =log_kind), intent(in)  :: sync,polygon,buoyancy, massSpawning, withibm, outputtemp, outputsaln
 
 !put variable
  CALL ncheck(nf90_put_var(ncId, timeVar,time,start =(/ timeId /)),trim(ncfname))
+ 
  IF (timeId .eq. 1) THEN
-  CALL ncheck(nf90_put_var(ncId, locVar,locnr,start =(/ particleId /)),trim(ncfname)) 
+   CALL ncheck(nf90_put_var(ncId, locVar,locnr,start =(/ particleId /)),trim(ncfname)) 
  ENDIF
+ 
  CALL ncheck(nf90_put_var(ncId, lonVar,lon,(/timeId,particleId /)),trim(ncfname))     
  CALL ncheck(nf90_put_var(ncId, latVar,lat,(/timeId,particleId /)),trim(ncfname))     
  CALL ncheck(nf90_put_var(ncId, depthVar,depth,(/timeId,particleId /)),trim(ncfname))
+ 
  IF (withibm) THEN
-  CALL ncheck(nf90_put_var(ncId, distanceVar,distance,(/timeId,particleId /)),trim(ncfname))
+   CALL ncheck(nf90_put_var(ncId, distanceVar,distance,(/timeId,particleId /)), trim(ncfname))
  ENDIF
+ 
  IF (outputtemp) THEN
-  CALL ncheck(nf90_put_var(ncId, tempVar,temp,(/timeId,particleId /)),trim(ncfname))
+   CALL ncheck(nf90_put_var(ncId, tempVar,temp,(/timeId,particleId /)),trim(ncfname))
  ENDIF
+ 
  IF (outputsaln) THEN
-  CALL ncheck(nf90_put_var(ncId, salnVar,saln,(/timeId,particleId /)),trim(ncfname))
+   CALL ncheck(nf90_put_var(ncId, salnVar,saln,(/timeId,particleId /)),trim(ncfname))
  ENDIF
+ 
  IF (inmld .ge. 0) THEN
-  CALL ncheck(nf90_put_var(ncId, mldVar,inmld,(/timeId,particleId /)),trim(ncfname))
+   CALL ncheck(nf90_put_var(ncId, mldVar,inmld,(/timeId,particleId /)),trim(ncfname))
  ENDIF
+ 
  IF (timeId .eq. 1) THEN
-  CALL ncheck(nf90_put_var(ncId, statusVar,0,(/particleId /)),trim(ncfname))   
+   CALL ncheck(nf90_put_var(ncId, statusVar,0,(/particleId /)),trim(ncfname))   
  ENDIF
+ 
  IF (stat .lt. 0) THEN     
-  CALL ncheck(nf90_put_var(ncId, statusVar,stat,(/particleId /)),trim(ncfname))   
+   CALL ncheck(nf90_put_var(ncId, statusVar,stat,(/particleId /)),trim(ncfname))   
  ENDIF
+ 
  IF (timeId .eq. 1) THEN
-  CALL ncheck(nf90_put_var(ncId, releaseVar,date,(/ particleId /)),trim(ncfname))
+   CALL ncheck(nf90_put_var(ncId, releaseVar,date,(/ particleId /)),trim(ncfname))
  ENDIF
 
  IF (polygon) THEN
-  IF (timeId .eq. 1) THEN
-   CALL ncheck(nf90_put_var(ncId, polyVar,poly,(/particleId /)),trim(ncfname))   
-  ENDIF
+   IF (timeId .eq. 1) THEN
+     CALL ncheck(nf90_put_var(ncId, polyVar,poly,(/particleId /)),trim(ncfname))   
+   ENDIF
  ENDIF
 
 !only output size and density of particle if buoyancy or massspawning is turned on
@@ -276,7 +284,6 @@ SUBROUTINE output_write_loc(ncfname, particleId, timeId,locnr, time, &
 END SUBROUTINE output_write_loc
 
 !**************************************************************
-
 SUBROUTINE output_close(ncfname)
  character (len=*), intent(in)         :: ncfname
 
@@ -285,6 +292,4 @@ SUBROUTINE output_close(ncfname)
 END SUBROUTINE output_close
 
 !**************************************************************
-
 END MODULE mod_netcdfoutput
-

@@ -77,8 +77,6 @@ real(kind=real_kind) :: &
 
 END SUBROUTINE get_buoyancy
 !**************************************************************
-
-!***************************************************************************
  subroutine load_buoyancy(buoyancyFilename)
 
  character(len = *), intent(in) :: buoyancyFilename
