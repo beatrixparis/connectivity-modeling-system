@@ -1,9 +1,9 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_getdata.f90                                                   *
-!* Last Modified: 2016-09-13                                                *
-!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
-!*                    Ashwanth Srinivasan                                   *
+!* Last Modified: 2016-11-18                                                *
+!* Code contributors: Ana Carolina Vaz, Judith Helgers, Claire B. Paris     * 
+!*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
 !* This program is free software: you can redistribute it and/or modify     *
@@ -218,7 +218,8 @@ SUBROUTINE read_nest_file
   print *, 'fill_value in the nestfile has to have a value'
   stop
  ENDIF
-
+ 
+ print *, 'fill_value and velocity_conversion_factor on read', fill_value, velocity_conversion_factor
 END SUBROUTINE read_nest_file
 
 !**************************************************************
@@ -1284,58 +1285,75 @@ SUBROUTINE create_nestfile(nestname, wvel_change, num)
     DO j=1,jdm_out
       DO k=1,kdm_out
 !       change uvel
-        IF ((uvel(i,j,k,1) .eq. fill_value) .or. (isnan(uvel(i,j,k,1))) ) THEN
+        !print *, 'uvel(i,j,k,1):', uvel(i,j,k,1), abs(uvel(i,j,k,1) - fill_value)
+        !print *, 'fill_value', fill_value 
+        !print *, 'velocity_conversion_factor', velocity_conversion_factor
+        IF (abs(uvel(i,j,k,1) - fill_value) .lt. 0.01) THEN
           uvel(i,j,k,1) = 2.**100
+          !print *, 'got into the if equal fill_value'        
         ELSE
-          uvel(i,j,k,1) = uvel(i,j,k,1) * velocity_conversion_factor
+          IF (isnan(uvel(i,j,k,1))) THEN
+            uvel(i,j,k,1) = 2.**100
+            !print *, 'got into the if equal nan'
+          ELSE
+            uvel(i,j,k,1) = uvel(i,j,k,1) * velocity_conversion_factor
+            !print *, 'got into the if conversion'
+          ENDIF
+        ENDIF
+        
+        IF (abs(vvel(i,j,k,1) - fill_value) .lt. 0.01) THEN
+          vvel(i,j,k,1) = 2.**100
+        ELSE
+          IF (isnan(uvel(i,j,k,1))) THEN
+            vvel(i,j,k,1) = 2.**100
+          ELSE
+            vvel(i,j,k,1) = vvel(i,j,k,1) * velocity_conversion_factor
+          ENDIF
         ENDIF
 
-!    change vvel
-     IF ((vvel(i,j,k,1) .eq. fill_value) .or. (isnan(vvel(i,j,k,1))) ) THEN
-      vvel(i,j,k,1) = 2.**100
-     ELSE
-      vvel(i,j,k,1) = vvel(i,j,k,1) * velocity_conversion_factor
-     ENDIF
-
-!    change wvel if there is a wvel
-     IF (wvel_name .ne. 'unknown') THEN
-      IF ((wvel(i,j,k,1) .eq. fill_value) .or. (isnan(wvel(i,j,k,1))) ) THEN
-       wvel(i,j,k,1) = 2.**100
-      ELSE
-       wvel(i,j,k,1) = wvel(i,j,k,1) * velocity_conversion_factor
-       IF (wvel_change) THEN
-        wvel(i,j,k,1) = -1. * wvel(i,j,k,1)
+!      change wvel if there is a wvel
+       IF (wvel_name .ne. 'unknown') THEN
+         IF (abs(wvel(i,j,k,1) - fill_value) .lt. 0.01) THEN
+           wvel(i,j,k,1) = 2.**100
+         ELSE
+           IF (isnan(wvel(i,j,k,1))) THEN
+             wvel(i,j,k,1) = 2.**100
+           ELSE
+             wvel(i,j,k,1) = wvel(i,j,k,1) * velocity_conversion_factor
+             IF (wvel_change) THEN
+               wvel(i,j,k,1) = -1. * wvel(i,j,k,1)
+             ENDIF
+           ENDIF
+         ENDIF  
        ENDIF
-      ENDIF
-     ENDIF
 
-!    change dens
-     IF (dens_name .ne. 'unknown' ) THEN
-      IF (dens(i,j,k,1) .eq. fill_value) THEN
-       dens(i,j,k,1) = 2.**100
-      ENDIF
-     ENDIF
+!      change dens
+       IF (dens_name .ne. 'unknown' ) THEN
+         IF (abs(dens(i,j,k,1) - fill_value) .lt. 0.01) THEN
+           dens(i,j,k,1) = 2.**100
+         ENDIF
+       ENDIF
 
-!    change temp
-     IF (temp_name .ne. 'unknown' ) THEN
-      IF (temp(i,j,k,1) .eq. fill_value) THEN
-       temp(i,j,k,1) = 2.**100
-      ENDIF
-     ENDIF
+!      change temp
+       IF (temp_name .ne. 'unknown' ) THEN
+         IF (abs(temp(i,j,k,1) - fill_value) .lt. 0.01) THEN
+           temp(i,j,k,1) = 2.**100
+         ENDIF
+       ENDIF
 
-!    change saln
-     IF (saln_name .ne. 'unknown' ) THEN
-      IF (saln(i,j,k,1) .eq. fill_value) THEN
-       saln(i,j,k,1) = 2.**100
-      ENDIF
-     ENDIF
+!      change saln
+       IF (saln_name .ne. 'unknown' ) THEN
+         IF (abs(saln(i,j,k,1) - fill_value) .lt. 0.01) THEN
+           saln(i,j,k,1) = 2.**100
+         ENDIF
+       ENDIF
 
-!    change ssh
-     IF (ssh_name .ne. 'unknown' ) THEN
-      IF (ssh(i,j,1) .eq. fill_value) THEN 
-       ssh(i,j,1) = 2.**100
-      ENDIF
-     ENDIF
+!      change ssh
+       IF (ssh_name .ne. 'unknown' ) THEN
+         IF (abs(ssh(i,j,1) - fill_value) .lt. 0.01) THEN
+           ssh(i,j,1) = 2.**100
+         ENDIF
+       ENDIF
     ENDDO
    ENDDO
   ENDDO
