@@ -1,8 +1,8 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_buoyancy_larva.f90                                            *
-!* Last Modified: 2011-07-22                                                *
-!* Code contributors: Judith Helgers, Claire B. Paris                       * 
+!* Last Modified: 2016-04-08                                                *
+!* Code contributors: Claire B. Paris, Judith Helgers, Ana Carolina Vaz     * 
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *

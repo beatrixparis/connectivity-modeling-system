@@ -1,8 +1,9 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_kinds.f90                                                     *
-!* Last Modified: 2011-07-22                                                *
-!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris  * 
+!* Last Modified: 2016-04-01                                                *
+!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!*                    Ashwanth Srinivasan                                   * 
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *

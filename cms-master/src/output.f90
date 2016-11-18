@@ -1,9 +1,9 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : output.f90                                                        *
-!* Last Modified: 2012-03-20                                                *
-!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris, * 
-!*                    Erik van Sebille                                      *
+!* Last Modified: 2016-09-13                                                *
+!* Code contributors: Claire B Paris, Ana Carolina Vaz, Judith Helgers,     * 
+!*                    Ashwanth Srinivasan, Erik van Sebille                 * 
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *

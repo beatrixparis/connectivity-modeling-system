@@ -1,8 +1,9 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_mixedlayerphysics.f90                                         *
-!* Last Modified: 2013-06-04                                                *
-!* Code contributors: Judith Helgers, Erik van Sebille, Claire B. Paris     *
+!* Last Modified: 2016-04-01                                                *
+!!* Code contributors: Claire B Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!*                    Ashwanth Srinivasan, Erik van Sebille                 * 
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *

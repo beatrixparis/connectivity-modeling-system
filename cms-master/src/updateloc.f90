@@ -1,9 +1,9 @@
-	!****************************************************************************
+!****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : updateloc.f90                                                     *
-!* Last Modified: 2011-07-22                                                *
-!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris, * 
-!*                    Ana Carolina Vaz                                      *
+!* Last Modified: 2016-04-10                                                *
+!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!*                    Ashwanth Srinivasan                                   *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *

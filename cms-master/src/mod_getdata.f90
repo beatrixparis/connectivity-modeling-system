@@ -1,9 +1,9 @@
 !****************************************************************************
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : mod_getdata.f90                                                   *
-!* Last Modified: 2011-07-22                                                *
-!* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris  * 
-!*                                                                          *
+!* Last Modified: 2016-09-13                                                *
+!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!*                    Ashwanth Srinivasan                                   *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
 !* This program is free software: you can redistribute it and/or modify     *
