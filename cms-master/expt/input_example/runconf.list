@@ -38,6 +38,7 @@ loopfilesendmonth       = 12
 loopfilesendday         = 29
 !====================================================================!
 !Options for restarting
+writerestart            = .false.
 restartfromfile         = .false.
 restartwritefreq        = 432000
 !====================================================================!
