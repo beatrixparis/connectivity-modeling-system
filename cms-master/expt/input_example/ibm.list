@@ -38,5 +38,4 @@ strataFilename	        = "strataFile"  !file with strata information
 outputtemp = .false.
 outputsaln = .false.
 !====================================================================!
-
-$end9
+$end
