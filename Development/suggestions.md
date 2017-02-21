@@ -22,7 +22,7 @@ xstart = -90, xend = -60, ystart =-15, yend =30.
 
  
 ##Software management/github:
-1.	Check carriage returns at end of all example input files on github (cat -v)?
+1. Check carriage returns at end of all example input files on github (cat -v)?
 2.	Upload edited user guide (as pdf?) [Sal]
 3.	Add INSTALL.md file in top-level directory giving full instructions on how to compile and install the software. It should finish with instructions on how to run a simple calculation, providing all input and example output files so that the user can check that the software has been installed correctly. This means people can install CMS quickly without going through the user guide (as people may not always bother). Assume NO computing experience. [Sal - 1 month]
 4.	Switch to cmake for build system (tutorial:https://cmake.org/cmake-tutorial/ or google "cmake fortran guide" or "cmake tutorial"). This will allow you to automatically find and test dependencies, so that users don't need to edit the makefiles. It will also allow you to write tests to ensure that the dependencies are ok, i.e. netcdf has been compiled with the right things. If cmake runs, then you know all the dependencies are there, so the code should compile. This will make support easier, as you will know that the user has installed all dependencies directly. [Sal - 4 months]
@@ -33,4 +33,6 @@ xstart = -90, xend = -60, ystart =-15, yend =30.
 [Sal] testing whether copying all input and writing output to local dir (where I/O is faster), before copying to /output on completion improves run speed.  [Sal - 1 week]
 
 Output: netcdf uses a huge amount of memory (it reads all the file before writing the data points we are sending to it). Ascii also problematic as most code is now done for netcdf, and files are too big for matlab, etc.
+Input: Before, it only looped thought dates that we do have a release. Now, it loops since our first date of the nest file until the end (loop.f90). That’s a waste of time, since sometimes we have 4 years of data, but are dispersing for a month. Another suggestion is to read “tiles” of the netcdf, so only the positions that we need for the larvae/particles, not the entire file. The same idea could be used for polygons, not loop through all polygons, but only the polygons located on “tiles” or grid points, close to the larvae.
+
 Input: Before, it only looped thought dates that we do have a release. Now, it loops since our first date of the nest file until the end (loop.f90). That’s a waste of time, since sometimes we have 4 years of data, but are dispersing for a month. Another suggestion is to read “tiles” of the netcdf, so only the positions that we need for the larvae/particles, not the entire file. The same idea could be used for polygons, not loop through all polygons, but only the polygons located on “tiles” or grid points, close to the larvae.
