@@ -2,15 +2,16 @@
 I haven’t included bugs/fixes here as they are already in github issues.
  
 ##User guide: [Sal/Bex]
-1.	p.13 Fig. 8 remove input_florida as slightly confusing? (I can’t edit figures)
-2.	Remove all references to ‘orthogrid’?
-3.	p.15 (5.1) to actually run getdata type ./getdata expt_name nest_number?
-4.	Add info on the changes you need to make before running cms after getdata, e.g. replacing the source data fill_value used in getdata with the cms one?
-5.	p.21 figure legends should actually read:
+- p.13 Fig. 8 remove input_florida as slightly confusing? (I can’t edit figures)
+- Also add example for expt_1 to Fig. 8?
+- Remove all references to ‘orthogrid’?
+- p.15 (5.1) to actually run getdata type ./getdata expt_name nest_number?
+- Add info on the changes you need to make before running cms after getdata, e.g. replacing the source data fill_value used in getdata with the cms one?
+- p.21 figure legends should actually read:
 		xstart = -90, xend = -45, ystart =15, yend =30.
 not:
 xstart = -90, xend = -60, ystart =-15, yend =30.
-6.	Add notes on efficient running: Only have the nest files you need in the /nests dir, copy to local dir for running etc?
+- Add notes on efficient running: Only have the nest files you need in the /nests dir, copy to local dir for running etc?
 
 ##Code development:
 1.      Remove all references to ‘orthogrid’?
