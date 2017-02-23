@@ -1,41 +1,41 @@
-&ibm
-!====================================================================!
-!Adding buoyancy 
-buoyancy                = .true.
-buoyancyFilename        = "buoyancytest"  !buoyancy filename
-!====================================================================!
-!Adding marine habitats 
-polygon                 = .true.
-polyFilename            = "poly10km.xyz"
-settlementStart         = 22             !in days
-!====================================================================!
-!Adding probability matrix to move particle up and down 
-ibio                    = .false.
-ibioFilename            = "vert_matrix"
-ibioTimeStep            = 43200          !in seconds
-!====================================================================!
-!Adding mortality rate 
-mort                    = .true.
-halflife                = 31104000       !days in seconds
-!====================================================================!
-!Adding different attributes to each particle 
-diffpart                = .false.
-diffpartFilename        = "diffpart_matrix"
-!====================================================================!
-!Adding two ways  to move the particles up and down  
-massSpawning            = .false.
-larvaStart              = 7              !in days
-!====================================================================!
-!Adding tidal stream movement 
-tidalmovement           = .false.
-tstStart                = 14             !in days
-!====================================================================!
-!Adding strata for 3D polygons
-strata			            = .false.
-strataFilename	        = "strataFile"  !file with strata information
-!====================================================================!
-!Output interpolated temperature in netcdf file
-outputtemp = .false.
-outputsaln = .false.
-!====================================================================!
-$end
+	&ibm
+	!==============================================================!
+	! Buoyancy Module
+	Buoyancy          = .false.
+	buoyancyFilename  = "buoyancytest" !buoyancy filename
+	!==============================================================!
+	! Seascape Module
+	polygon		        = .false.
+	polyFilename 	    = "Caribbean.xyz"
+	settlementStart	  = 160		        !in days
+	!==============================================================!
+	! Probability Matrix of Vertical Migration
+	ibio 			        = .true.
+	ibioFilename	    = "vert_matrix"
+	ibioTimeStep	    = 259200	      !in seconds
+	!==============================================================!
+	! Mortality Rate
+	mort 			        = .false.
+	halflife	 	      = 90000	        !in seconds
+	!==============================================================!
+	! Different Particle Attributes Module
+	diffpart 		      = .false.
+	diffpartFilename  = "diffpart_matrix"
+	!==============================================================!
+	! Combined Buoyancy and Vertical Migration 
+	massSpawning	    = .false.
+	larvaStart		    = 7		          !in days
+	!==============================================================!
+	! Selective Tidal Stream Transport 
+	tidalmovement	    = .false.
+	tstStart		      = 14		        !in days
+	!==============================================================!
+	! Adding strata for 3D polygons
+	strata		  	    = .false.
+	strataFilename	  = "strataFile"  !file with strata information
+	!==============================================================!
+	! Output temperature/salinity in netcdf file
+	outputtemp        = .false.
+	outputsaln        = .false.
+	!==============================================================!
+	$end
