@@ -1,13 +1,15 @@
 CMS USER TEST EXAMPLE OUTPUT
 
 This test output was obtained using the example input files given in input_example.
-
-In this case, cms is run passively for 1 particle, with no turbulence or IBM.
-
+In this case, cms is run passively for 3 particles released on 3 consecutive days, with no turbulence or IBM.
 This allows the user to test that CMS has installed correctly.
-
 You should get no error messages, and the output should exactly match that given here.
 
-Plot the output using cms-master/postproc/draw_traj_netcdf.m
+To run this test, you must first run getdata using the example nest.nml file given in input_getdata:
+> ./getdata getdata 1
+This will download the HYCOM data files needed to run the test.
 
-See user guide for details on how to run this test.
+Then run the cms using the example input files in input_example:
+> ./cms example
+
+Plot the output using cms-master/postproc/draw_traj_netcdf.m and compare with the output given here
