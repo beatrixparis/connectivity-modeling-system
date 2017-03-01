@@ -1,5 +1,5 @@
 %% parameters
-nest_filename='nest_1_20100101000000.nc';
+nest_filename='nest_1_20160101000000.nc';
 traj_filename='traj_file_1.nc';
 
 %% read in the nest data
