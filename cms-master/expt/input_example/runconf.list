@@ -1,16 +1,16 @@
 &runconf
 !====================================================================!
 nnests               = 1 
-timeMax              = 1728000 
-timestep             = 2700
-outputFreq           = 43200
+timeMax              = 864000           !in seconds
+timestep             = 3600             !in seconds
+outputFreq           = 86400            !in seconds
 releaseFilename      = "releaseFile" 
 !====================================================================!
 !Turbulence Module
-turb                 = .true.
-horDiff              = 2                !horizontal diffusivity
-vertDiff             = 0.5              !vertical diffusivity
-turbTimestep         = 2700             !in seconds
+turb                 = .false.
+horDiff              =                  !horizontal diffusivity
+vertDiff             =                  !vertical diffusivity
+turbTimestep         =                  !in seconds
 !====================================================================!
 !Periodic Boundary Condition
 periodicbc           = .false.
@@ -30,20 +30,20 @@ upperlevelsurface       = .true.
 !====================================================================!
 !Flag for looping through the velocity fields
 loopfiles               = .false.
-loopfilesstartyear      = 1980
-loopfilesstartmonth     = 1
-loopfilesstartday       = 5
-loopfilesendyear        = 2006
-loopfilesendmonth       = 12
-loopfilesendday         = 29
+loopfilesstartyear      =
+loopfilesstartmonth     =
+loopfilesstartday       =
+loopfilesendyear        =
+loopfilesendmonth       =
+loopfilesendday         =
 !====================================================================!
 !Options for restarting
 writerestart            = .false.
 restartfromfile         = .false.
-restartwritefreq        = 432000
+restartwritefreq        =              !in seconds
 !====================================================================!
 !Options for mixed layer physics
 mixedlayerphysics       = .false.
-mixedlayerwmax          = 0.1
+mixedlayerwmax          =
 !====================================================================!
 &end
