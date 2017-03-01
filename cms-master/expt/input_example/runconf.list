@@ -8,8 +8,8 @@ releaseFilename      = "releaseFile"
 !====================================================================!
 !Turbulence Module
 turb                 = .false.
-horDiff              =                  !horizontal diffusivity
-vertDiff             =                  !vertical diffusivity
+horDiff              =                  !horizontal diffusivity (m2/s2)
+vertDiff             =                  !vertical diffusivity (m2/s2)
 turbTimestep         =                  !in seconds
 !====================================================================!
 !Periodic Boundary Condition
@@ -24,8 +24,7 @@ backward             = .false.
 !Output files in ASCII instead of netCDF
 ascii                = .false.
 !====================================================================!
-!Flag for putting particles back in the ocean when they go through the
-!uppermost depth level
+!Flag to limit particle vertical movement to upper layer
 upperlevelsurface       = .true.
 !====================================================================!
 !Flag for looping through the velocity fields
@@ -37,7 +36,7 @@ loopfilesendyear        =
 loopfilesendmonth       =
 loopfilesendday         =
 !====================================================================!
-!Options for restarting
+!Options for saving restart files and restarting
 writerestart            = .false.
 restartfromfile         = .false.
 restartwritefreq        =              !in seconds
