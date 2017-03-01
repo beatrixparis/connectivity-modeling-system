@@ -5,3 +5,5 @@ This test output was obtained using the example input files given in input_examp
 In this case, cms is run purely passively, with no turbulence or IBM.
 
 This allows the user to test the CMS following installation. The output should exactly match that given here.
+
+See user guide for details on how to run this test.
