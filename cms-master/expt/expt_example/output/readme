@@ -1,0 +1,5 @@
+This test output was running using the example input files given in input_example.
+
+In this case, cms is run purely passively, with no turbulence or IBM.
+
+This allows the user to test the CMS following installation. The output should exactly match that given here.
