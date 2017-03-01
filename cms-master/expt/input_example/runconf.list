@@ -8,9 +8,9 @@ releaseFilename      = "releaseFile"
 !====================================================================!
 !Turbulence Module
 turb                 = .false.
-horDiff              =                  !horizontal diffusivity (m2/s2)
-vertDiff             =                  !vertical diffusivity (m2/s2)
-turbTimestep         =                  !in seconds
+horDiff              =  0               !horizontal diffusivity (m2/s2)
+vertDiff             =  0               !vertical diffusivity (m2/s2)
+turbTimestep         =  0               !in seconds
 !====================================================================!
 !Periodic Boundary Condition
 periodicbc           = .false.
@@ -29,20 +29,20 @@ upperlevelsurface       = .true.
 !====================================================================!
 !Flag for looping through the velocity fields
 loopfiles               = .false.
-loopfilesstartyear      =
-loopfilesstartmonth     =
-loopfilesstartday       =
-loopfilesendyear        =
-loopfilesendmonth       =
-loopfilesendday         =
+loopfilesstartyear      = 0
+loopfilesstartmonth     = 0
+loopfilesstartday       = 0
+loopfilesendyear        = 0
+loopfilesendmonth       = 0
+loopfilesendday         = 0
 !====================================================================!
 !Options for saving restart files and restarting
 writerestart            = .false.
 restartfromfile         = .false.
-restartwritefreq        =              !in seconds
+restartwritefreq        = 0            !in seconds
 !====================================================================!
 !Options for mixed layer physics
 mixedlayerphysics       = .false.
-mixedlayerwmax          =
+mixedlayerwmax          = 0
 !====================================================================!
 &end
