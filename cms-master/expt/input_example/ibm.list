@@ -1,41 +1,41 @@
 	&ibm
 	!==============================================================!
 	! Buoyancy Module
-	Buoyancy          = .false.
-	buoyancyFilename  = "buoyancytest" !buoyancy filename
+	Buoyancy          	= .false.
+	buoyancyFilename  	= "buoyancytest"
 	!==============================================================!
 	! Seascape Module
 	polygon		        = .false.
-	polyFilename 	    = "Caribbean.xyz"
-	settlementStart	  = 160		        !in days
+	polyFilename 	    	= "Caribbean.xyz"
+	settlementStart	  	= 160		!in days
 	!==============================================================!
 	! Probability Matrix of Vertical Migration
-	ibio 			        = .true.
-	ibioFilename	    = "vert_matrix"
-	ibioTimeStep	    = 259200	      !in seconds
+	ibio 			= .false.
+	ibioFilename	    	= "vert_matrix"
+	ibioTimeStep	    	= 259200	!in seconds
 	!==============================================================!
 	! Mortality Rate
-	mort 			        = .false.
-	halflife	 	      = 90000	        !in seconds
+	mort			= .false.
+	halflife		= 90000		!in seconds
 	!==============================================================!
 	! Different Particle Attributes Module
-	diffpart 		      = .false.
-	diffpartFilename  = "diffpart_matrix"
+	diffpart		= .false.
+	diffpartFilename  	= "diffpart_matrix"
 	!==============================================================!
 	! Combined Buoyancy and Vertical Migration 
-	massSpawning	    = .false.
-	larvaStart		    = 7		          !in days
+	massSpawning		= .false.
+	larvaStart		= 7		!in days
 	!==============================================================!
 	! Selective Tidal Stream Transport 
-	tidalmovement	    = .false.
-	tstStart		      = 14		        !in days
+	tidalmovement		= .false.
+	tstStart		= 14		!in days
 	!==============================================================!
 	! Adding strata for 3D polygons
-	strata		  	    = .false.
-	strataFilename	  = "strataFile"  !file with strata information
+	strata			= .false.
+	strataFilename		= "strataFile"
 	!==============================================================!
 	! Output temperature/salinity in netcdf file
-	outputtemp        = .false.
-	outputsaln        = .false.
+	outputtemp		= .false.
+	outputsaln		= .false.
 	!==============================================================!
 	$end
