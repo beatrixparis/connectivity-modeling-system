@@ -10,9 +10,11 @@ You should see the directories *input\_getdata* and *input\_example*.
 
 3. Then, run the cms test using the example input files in input_example by typing:
 > ./cms example
+
 In this case, cms is run passively for 3 particles released on 3 consecutive days, with no turbulence or IBM.
 
 If the test has worked correctly, you should get an output file called traj_file_1.nc in expt_example/output.
+
 An example output file for the test is also given in expt_example/output called traj_file_example.nc with which to compare your results.
 
 You can plot the output using cms-master/postproc/draw_traj_netcdf.m and compare with the example output:
