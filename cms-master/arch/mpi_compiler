@@ -12,7 +12,7 @@ CCFLAGS       = -O
 #the Fortran compiler to create executable
 LD            = $(FC)
 #the Fortran flags to create executable
-LDFLAGS       = -L/usr/local/netcdf/lib -L/usr/local/lib -lnetcdf -lnetcdff -lcurl -limf -lm
+LDFLAGS       = -L/usr/local/netcdf/lib -L/usr/local/lib -lnetcdf -lnetcdff -lcurl -lm
 EXTRALIBS     = 
 
 # Rules
