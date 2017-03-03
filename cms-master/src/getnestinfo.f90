@@ -117,6 +117,13 @@ SUBROUTINE getnestinfo(nest_n)
  nests(nest_n)%tempname="zt"
  nests(nest_n)%salnname="zs"
  nests(nest_n)%orthogrid = orthogrid
+ 
+ ! check if fill value is the one used by getdata
+  if (fill_value .ne. 1.2676506E30) then
+   print *, "WARNING: The fill value you have entered in nest.nml is not the one used by getdata (1.2676506E30), is that what you intend?"
+  endif
+ ! just a user check
+ 
  if (int(nests(nest_n)%time_step/(30*secs_in_day)).ge.1) then
    nests(nest_n)%time_units = "months"
  endif
