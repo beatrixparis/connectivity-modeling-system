@@ -38,7 +38,7 @@ SUBROUTINE writerestartfile(locname, startR, endR, time_t)
  character(char_len)     :: rfname
 
  restartname = "restart_"//trim(locname)//".bin"
- print *,'Writing restart file'
+ !print *,'Writing restart file'
  CALL get_unit(iunit_restart)
  open (unit=iunit_restart,file=trim(filescratch)//trim(restartname),status="unknown", form="unformatted")
 
