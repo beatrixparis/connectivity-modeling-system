@@ -123,6 +123,7 @@ SUBROUTINE load_runconf
  ENDIF
 
  IF (writerestart) THEN
+ print *, "Writing restart file. Will be updated every:",restartwriteFreq,"seconds"
   IF (restartwritefreq .le. 0) THEN
    restartwriteFreq = outputFreq*10
    print *, "Setting parameter restartwriteFreq to that of 10 * outputFreq at ", restartwriteFreq
