@@ -94,14 +94,22 @@ SUBROUTINE create_directories(filenumber)
  character(char_len), intent(in)  :: filenumber    
  character(char_len)              :: filedir, fileoutput, filescratch 
  
+ !make /expt_
  write(filedir,'(A,A)') 'expt_',trim(filenumber)
  CALL make_dir (adjustl(trim(filedir)),Len(adjustl(trim(filedir))))
+ !make /expt_/nests
  write(filenest,'(A,A,A)') 'expt_',trim(filenumber),'/nests/'
  CALL make_dir(adjustl(trim(filenest)),Len(adjustl(trim(filenest))))
- write(fileoutput,'(A,A,A)') 'expt_',trim(filenumber),'/output/'
- CALL make_dir(adjustl(trim(fileoutput)),Len(adjustl(trim(fileoutput))))
- write(filescratch,'(A,A,A)') 'expt_',trim(filenumber),'/SCRATCH/'
- CALL make_dir(adjustl(trim(filescratch)),Len(adjustl(trim(filescratch))))
+ 
+ ! getdata doean't need to make these directories as this is done by cms
+ !make /expt_/output
+ !write(fileoutput,'(A,A,A)') 'expt_',trim(filenumber),'/output/'
+ !CALL make_dir(adjustl(trim(fileoutput)),Len(adjustl(trim(fileoutput))))
+ !make /expt_/SCRATCH
+ !write(filescratch,'(A,A,A)') 'expt_',trim(filenumber),'/SCRATCH/'
+ !CALL make_dir(adjustl(trim(filescratch)),Len(adjustl(trim(filescratch))))
+ 
+ !add path to /input_/
  write(fileinput,'(A,A,A)') 'input_',trim(filenumber), '/'
 
 END SUBROUTINE create_directories
