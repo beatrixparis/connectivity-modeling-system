@@ -201,12 +201,12 @@ SUBROUTINE loop(my_id, npes)
    DO n=1, particle(r)%num_rel
     !IF there are no nestfiles for given data, output -5 to outputfile
      IF (particle(r)%move(n).eqv..false.) THEN
-     print *, 'Warning: no data for start time of particle ', r ,' so it will not be integrated.'
        IF (ascii) THEN
          CALL stateout_trajfile_ascii(n,r,startsec,-5)
        ELSE
          CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-5,startR)
        ENDIF
+         print *, 'Warning: no data for start time of particle ', r ,' so it will not be integrated.'
        IF (nests(1)%time_units == "months") THEN
          print *, '(In "monthly" mode, particles can only start on or after second available month)'
        ENDIF
