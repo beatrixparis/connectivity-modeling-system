@@ -95,7 +95,7 @@ SUBROUTINE load_runconf
   stop
  ENDIF
  
-!read file    
+!read file   
  read(iunit,nml=runconf)  
 
 !close file
@@ -103,38 +103,41 @@ SUBROUTINE load_runconf
 
 !check parameters
  IF (nnests .le. 0) THEN
-  print *, "Error: Parameter nnests should have a value larger than 0"
+  print *, "Error: Parameter nnests in the file runconf.list should have a value larger than 0"
   stop
  ENDIF    
 
  IF (timeMax .le. 0) THEN
-  print *, "Error: Parameter timeMax should have a value larger than 0"
+  print *, "Error: Parameter timeMax in the file runconf.list should have a value larger than 0"
   stop
  ENDIF  
 
  IF (timeStep .le. 0) THEN
-  print *, "Error: Parameter timeStep should have a value larger than 0"
+  print *, "Error: Parameter timeStep in the file runconf.list should have a value larger than 0"
   stop
  ENDIF  
 
  IF (outputFreq .le. 0) THEN
-  print *, "Error: Parameter outputFreq should have a value larger than 0"
+  print *, "Error: Parameter outputFreq in the file runconf.list should have a value larger than 0"
   stop
  ENDIF
 
- IF (restartwritefreq .le. 0) THEN
-  restartwriteFreq = outputFreq*10
-  print *, "Setting parameter restartwriteFreq to that of 10 * outputFreq at ", restartwriteFreq
+ IF (writerestart) THEN
+  IF (restartwritefreq .le. 0) THEN
+   restartwriteFreq = outputFreq*10
+   print *, "Setting parameter restartwriteFreq to that of 10 * outputFreq at ", restartwriteFreq
+  ENDIF
  ENDIF
 
  IF (releaseFilename .eq. "") THEN
-  print *, "Error: Parameter releaseFilename should have a value "
+  print *, "Error: Parameter releaseFilename in the file runconf.list should have a value "
   stop
  ENDIF
 
  IF (turb) THEN
    IF (turbTimestep .eq. 0) THEN
      turbTimestep = timestep
+     print *, "WARNING: turbTimestep in the file runconf.list is set to 0 when turb=true, assuming turbTimestep = timestep"
    ENDIF
    IF (turbTimestep .lt. timestep) THEN
     print *, "turbTimestep in the file runconf.list has a value larger or equal to timestep"
@@ -232,13 +235,13 @@ SUBROUTINE load_ibm
 ! close file
   call release_unit(iunit)
  ELSE
-  print *, "Warning: File ", trim(fileinput)//'ibm.list'," does not exist"
+  print *, "Warning: File ", trim(fileinput)//'ibm.list'," does not exist, CMS will run in passive mode (no IBM)"
   withibm=.false.
-  ibio=.false.
-  massspawning=.false.
   buoyancy=.false.
+  ibio=.false.
   mort=.false.
   diffpart=.false.
+  massspawning=.false. 
   tidalMovement=.false.
   strata=.false.
  ENDIF
