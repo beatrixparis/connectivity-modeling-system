@@ -8,7 +8,10 @@ You should see the directories *input\_getdata* and *input\_example*.
 2. First, run getdata to download HYCOM data files needed to run the test using the example by typing:
 > ./getdata getdata 1
 
-3. Then, run the cms test using the example input files in input_example by typing:
+3. Then, create a link to the downloaded files (nest files) in the expt_example directory by typing:
+> ln -s ../expt_getdata/nests ./expt_example/
+
+4. Then, run the cms test using the example input files in input_example by typing:
 > ./cms example
 
 In this case, cms is run passively for 3 particles released on 3 consecutive days, with no turbulence or IBM.
