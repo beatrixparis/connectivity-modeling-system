@@ -47,7 +47,7 @@
  numTime = ceiling(real(timeMax)/real(outputFreq)) + 1
 !Total number of timesteps
  numTime2 = int(total_seconds/timeStep) + 1
-!Total number release locations
+!Total number release events (i.e. no of lines in release file)
  numLoc  = (endR - startR) + 1
 
 !create trajectory output file
@@ -64,11 +64,11 @@
  print *, "=========================================="
  print *, "File name  : ", trim(trajname)
  print '(A,I0,A,I0,A,I0,A)', & 
-   " Total number release locations     : ",numLoc," (",startR," to ",endR,")"
+   " Total number of release events     : ",numLoc," (numbers ",startR," to ",endR,")"
  print '(A,I0)', &
    " Total number of particles released : ",numParticles
  print '(A,I0)', &
-   " Total number of time steps   : ",numTime2
+   " Total number of time steps         : ",numTime2
  print '(A,I0)', &
    " Total number of time steps in output file: ",numTime
     
