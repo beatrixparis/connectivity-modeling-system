@@ -1539,8 +1539,8 @@ SUBROUTINE make_nestfiles_opendap
 ! if not already downloaded then download
   IF (downl .eqv. .false.) THEN
    print *, 'Reading data file ',num+1,' of ',lend-lstart+1
-!  Open the file for reading
-   CALL nc_open(filename, ncId)
+!  Open the file for reading (this was casuing issues with having 1 extra netcdf file open so have commented it out for now  - SW)
+!   CALL nc_open(filename, ncId) 
 !  get data from file
 !  read u
    IF (uvel_name .ne. 'unknown' ) THEN
