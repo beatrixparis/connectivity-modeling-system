@@ -101,14 +101,6 @@ SUBROUTINE create_directories(filenumber)
  write(filenest,'(A,A,A)') 'expt_',trim(filenumber),'/nests/'
  CALL make_dir(adjustl(trim(filenest)),Len(adjustl(trim(filenest))))
  
- ! getdata doean't need to make these directories as this is done by cms
- !make /expt_/output
- !write(fileoutput,'(A,A,A)') 'expt_',trim(filenumber),'/output/'
- !CALL make_dir(adjustl(trim(fileoutput)),Len(adjustl(trim(fileoutput))))
- !make /expt_/SCRATCH
- !write(filescratch,'(A,A,A)') 'expt_',trim(filenumber),'/SCRATCH/'
- !CALL make_dir(adjustl(trim(filescratch)),Len(adjustl(trim(filescratch))))
- 
  !add path to /input_/
  write(fileinput,'(A,A,A)') 'input_',trim(filenumber), '/'
 
@@ -1539,8 +1531,6 @@ SUBROUTINE make_nestfiles_opendap
 ! if not already downloaded then download
   IF (downl .eqv. .false.) THEN
    print *, 'Reading data file ',num+1,' of ',lend-lstart+1
-!  Open the file for reading (this was casuing issues with having 1 extra netcdf file open so have commented it out for now  - SW)
-!   CALL nc_open(filename, ncId) 
 !  get data from file
 !  read u
    IF (uvel_name .ne. 'unknown' ) THEN
@@ -1844,7 +1834,7 @@ SUBROUTINE readdata(flename,ncId,fieldname,field,tstart)
    ENDIF 
    field(:,:,:,1) = field3d (:,:,:)
   ENDIF
- ELSE !not hasDepth
+ ELSE ! not hasDepth
   IF (hasTime) THEN
    IF (istart > iend) THEN
     CALL nc_read3d(flename, ncId, fieldname,field3d(1:ipart1,:,1),ipart1,jdm_out,1,(/ istart,jstart,tstart /))
@@ -1853,7 +1843,7 @@ SUBROUTINE readdata(flename,ncId,fieldname,field,tstart)
     CALL nc_read3d(flename, ncId, fieldname,field3d(:,:,1),idm_out,jdm_out,1,(/ istart,jstart,tstart /))
    ENDIF 
    field(:,:,1,1) = field3d (:,:,1)
-  ELSE !not hasTime
+  ELSE ! not hasTime
    IF (istart > iend) THEN
     CALL nc_read2d(flename, ncId, fieldname,field2d(1:ipart1,:),ipart1,jdm_out,(/ istart,jstart /))
     CALL nc_read2d(flename, ncId, fieldname,field2d(ipart1+1:idm_out,:),iend,jdm_out,(/ 1,jstart /))
