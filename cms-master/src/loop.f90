@@ -216,7 +216,7 @@ SUBROUTINE loop(my_id, npes)
        !print *, "particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n", particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n
 !      if startposition is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
-       print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n),'in polygon',r,'is ouside of the nest grid, it will not be moved.'
+       print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n),'in polygon',r,'is outside of the nest grid, it will not be moved.'
          IF (ascii) THEN
            CALL stateout_trajfile_ascii(n,r,startsec,-1)
          ELSE
