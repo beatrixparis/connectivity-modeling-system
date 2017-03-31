@@ -120,7 +120,8 @@ SUBROUTINE getnestinfo(nest_n)
  
  ! check if fill value is the one used by getdata
   if (fill_value .ne. 1.2676506E30) then
-   print *, "WARNING: The fill value you have entered in nest.nml is not the one used by getdata (1.2676506E30), is that what you intend?"
+   print *, "WARNING: The fill value you have entered in nest.nml is not the one used by getdata", &
+   "(1.2676506E30), is that what you intend?"
   endif
  ! just a user check
  
