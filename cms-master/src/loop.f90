@@ -216,7 +216,8 @@ SUBROUTINE loop(my_id, npes)
        !print *, "particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n", particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n
 !      if startposition is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
-       print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n),'in polygon',r,'is outside of the nest grid, it will not be moved.'
+       print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n), &
+       'in polygon',r,'is outside of the nest grid, it will not be moved.'
          IF (ascii) THEN
            CALL stateout_trajfile_ascii(n,r,startsec,-1)
          ELSE
@@ -242,7 +243,8 @@ SUBROUTINE loop(my_id, npes)
 !      if startposition is on land, output -2 to outputfile, but only if fill_value ne 0
        IF (nests(ngrid)%fill_value .ne. 0.) THEN
          IF ((flag(1) .and. flag(2)) .or. landFlag)  THEN
-	 print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n),'in polygon',r,'is on land, it will not be moved.'
+	 print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n), &
+	 'in polygon',r,'is on land, it will not be moved.'
            IF (ascii) THEN
              CALL stateout_trajfile_ascii(n,r,startsec,-2)
            ELSE
@@ -329,7 +331,9 @@ SUBROUTINE loop(my_id, npes)
 
 !          Particle is outside time domain
            IF (particle(r)%flag(n,10)) THEN
-	   print *, 'Warning: You have run out of nest files for the integration period. Check your nests cover the release dates + timeMax (in runconf.list) and that you have the correct dates in the nest.nml file'
+	   print *, 'Warning: You have run out of nest files for the integration period.', &
+	   'Check your nests cover the release dates + timeMax (in runconf.list)', &
+	   ' and that you have the correct dates in the nest.nml file'
              IF (ascii) THEN
                CALL stateout_trajfile_ascii(n,r,run_time,-5)
              ELSE
