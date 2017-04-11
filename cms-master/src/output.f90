@@ -71,6 +71,7 @@
    " Total number of time steps         : ",numTime2
  print '(A,I0)', &
    " Total number of time steps in output file: ",numTime
+ print *, "=========================================="
     
 END SUBROUTINE init_trajfile
 
