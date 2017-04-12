@@ -463,7 +463,10 @@ SUBROUTINE loop(my_id, npes)
  CALL close_trajfile
  IF (polygon) THEN
    CALL close_confile
- ENDIF  
+ ENDIF
+ !message to indicate whether all output has been written succesfully, in case of issue during transfer to /output
+ print *, "============================================="
+ print *, "All output written successfully to /SCRATCH"
 
 !copy file from directory SCRATCH to directory output
  CALL rename_file( &
@@ -479,5 +482,7 @@ SUBROUTINE loop(my_id, npes)
    ,Len(adjustl(trim(filescratch))//trim(conname)) &
    ,Len(adjustl(trim(fileoutput ))//trim(conname)))
  ENDIF
+ print *, "All output transferred successfully to /output"
+ print *, "============================================="
 
 END SUBROUTINE loop
