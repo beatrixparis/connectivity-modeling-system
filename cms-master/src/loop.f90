@@ -199,7 +199,7 @@ SUBROUTINE loop(my_id, npes)
 !check first if the startpositions are correct
  DO r=startR,endR
    DO n=1, particle(r)%num_rel
-    !IF there are no nestfiles for given data, output -5 to outputfile
+!    1) if there are no nestfiles for given data, output -5 to outputfile
      IF (particle(r)%move(n).eqv..false.) THEN
        IF (ascii) THEN
          CALL stateout_trajfile_ascii(n,r,startsec,-5)
@@ -211,22 +211,24 @@ SUBROUTINE loop(my_id, npes)
          print *, '(In "monthly" mode, particles can only start on or after second available month)'
        ENDIF
      ELSE
-!      check if startposition is inside the grid  
+     !if the nestfiles exist, check if startposition is inside the grid  
        CALL findnest(particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n)
-       !print *, "particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n", particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n
-!      if startposition is outside grid, output -1 to outputfile
+!      2) if start position is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
-       print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n), &
-       'in polygon',r,'is outside of the nest grid, it will not be moved.'
+       print *, 'WARNING: Release position',particle(r)%nlat(n),particle(r)%nlon(n), &
+       'in polygon',r,'is outside of the nest grid'
          IF (ascii) THEN
            CALL stateout_trajfile_ascii(n,r,startsec,-1)
          ELSE
            CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-1,startR)
          ENDIF
          particle(r)%move(n) = .false.
-       ELSE
-!        check if startposition is on land
+       ELSE 
+       !if the particle is inside the grid, check if startposition is on land
          landflag = .true.
+	 !load the first datafile (needed to check whether start position is on land)
+   	 CALL getphysicaldata(startsec,basedate)
+	 ! get velocity values at start position to check if on land
          IF ((buoyancy) .or. (diffpart)) THEN
            CALL rungakutta(ngrid,particle(r)%nlon(n),particle(r)%nlat(n), & 
            particle(r)%ndepth(n),startsec,particle(r)%diam(n), &
@@ -236,31 +238,33 @@ SUBROUTINE loop(my_id, npes)
            CALL rungakutta(ngrid,particle(r)%nlon(n),particle(r)%nlat(n), &
            particle(r)%ndepth(n), startsec,-1, &
            -1,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
-           r,n,newi,newj,newk) 
-           !-1 are flags for dens and diam meaning that 
-           ! neither buoyany nor diffpart are being used
-       ENDIF                              
-!      if startposition is on land, output -2 to outputfile, but only if fill_value ne 0
+           r,n,newi,newj,newk) !-1 are flags for dens and diam meaning that neither buoyany nor diffpart are being used
+         ENDIF                              
+!      3) if startposition is on land, output -2 to outputfile, but only if fill_value ne 0
        IF (nests(ngrid)%fill_value .ne. 0.) THEN
          IF ((flag(1) .and. flag(2)) .or. landFlag)  THEN
-	 print *, 'Warning: Release position Lat:',particle(r)%nlat(n),'Lon:',particle(r)%nlon(n), &
-	 'in polygon',r,'is on land, it will not be moved.'
+	 print *, 'WARNING: Release position',particle(r)%nlat(n),particle(r)%nlon(n), &
+	 'in polygon',r,'is on land'
            IF (ascii) THEN
              CALL stateout_trajfile_ascii(n,r,startsec,-2)
            ELSE
              CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-2,startR)
            ENDIF
            particle(r)%move(n) = .false.
-         ENDIF
-       ENDIF
-!      output the startlocation
-       IF (ascii) THEN
+         ENDIF !checking land flags
+       ENDIF !IF (nests(ngrid)%fill_value .ne. 0.)      
+       
+!      4) if the start position is fine, output the start location
+       IF ((flag(1) .eqv. .false.) .and. (flag(2) .eqv. .false.) .and. (landFlag .eqv. .false.)) THEN
+       	IF (ascii) THEN
          CALL stateout_trajfile_ascii(n,r,startsec,0)
-       ELSE
+       	ELSE
          CALL stateout_trajfile_netcdf(n,r,startsec,startsec,0,startR)
-       ENDIF
-     ENDIF
-   ENDIF
+       	ENDIF
+       ENDIF !no land flags  
+       
+     ENDIF !check if particle is inside grid (ngrid .eq. -1)
+   ENDIF !checking start positions if nestfiles exist (particle(r)%move(n).eqv..true.)
   ENDDO    
  ENDDO 
 
