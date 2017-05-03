@@ -335,9 +335,6 @@ SUBROUTINE loop(my_id, npes)
 
 !          Particle is outside time domain
            IF (particle(r)%flag(n,10)) THEN
-	   print *, 'Warning: You have run out of nest files for the integration period.', &
-	   'Check your nests cover the release dates + timeMax (in runconf.list)', &
-	   ' and that you have the correct dates in the nest.nml file'
              IF (ascii) THEN
                CALL stateout_trajfile_ascii(n,r,run_time,-5)
              ELSE
