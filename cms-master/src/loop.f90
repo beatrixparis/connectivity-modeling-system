@@ -206,7 +206,7 @@ SUBROUTINE loop(my_id, npes)
        ELSE
          CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-5,startR)
        ENDIF
-         print *, 'Warning: no data for start time of particle ', r ,' so it will not be integrated.'
+         print *, 'Warning: no data for start time of release line', r ,' so it will not be integrated.'
        IF (nests(1)%time_units == "months") THEN
          print *, '(In "monthly" mode, particles can only start on or after second available month)'
        ENDIF
@@ -215,8 +215,7 @@ SUBROUTINE loop(my_id, npes)
        CALL findnest(particle(r)%nlon(n),particle(r)%nlat(n), particle(r)%ndepth(n), ngrid, r, n)
 !      2) if start position is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
-       print *, 'WARNING: Release position',particle(r)%nlat(n),particle(r)%nlon(n), &
-       'in polygon',r,'is outside of the nest grid'
+       print *, 'WARNING: Release line',r,'is outside of the nest grid'
          IF (ascii) THEN
            CALL stateout_trajfile_ascii(n,r,startsec,-1)
          ELSE
@@ -243,8 +242,7 @@ SUBROUTINE loop(my_id, npes)
 !      3) if startposition is on land, output -2 to outputfile, but only if fill_value ne 0
        IF (nests(ngrid)%fill_value .ne. 0.) THEN
          IF ((flag(1) .and. flag(2)) .or. landFlag)  THEN
-	 print *, 'WARNING: Release position',particle(r)%nlat(n),particle(r)%nlon(n), &
-	 'in polygon',r,'is on land'
+	 print *, 'WARNING: Release line',r,'is on land'
            IF (ascii) THEN
              CALL stateout_trajfile_ascii(n,r,startsec,-2)
            ELSE
