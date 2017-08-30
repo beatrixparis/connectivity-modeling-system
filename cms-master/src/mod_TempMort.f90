@@ -1,4 +1,4 @@
-MODULE mod_envmort
+MODULE mod_TempMort
 
  USE mod_kinds
 
@@ -39,4 +39,4 @@ MODULE mod_envmort
 !**************************************************************
 
 
-END MODULE mod_envmort
+END MODULE mod_TempMort
