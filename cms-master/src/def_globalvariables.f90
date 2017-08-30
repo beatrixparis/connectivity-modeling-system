@@ -65,7 +65,8 @@ MODULE globalvariables
                                   restartfromfile=.false., &
                                   mixedlayerphysics=.false., agrid=.true., &
                                   withibm, AxUsed(4), notmove, strata, &
-                                  writerestart=.false. ! needed for cktidalmovement
+                                  writerestart=.false., & ! needed for cktidalmovement
+                                  TempMort
  real (kind = real_kind)       :: dens_particle, diam_particle, &
                                   horDiff(max_nests)=-1., vertDiff(max_nests)=-1., &
                                   horDiffOrient, halflife, maxDistance, &
