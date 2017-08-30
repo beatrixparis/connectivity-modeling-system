@@ -210,7 +210,7 @@ SUBROUTINE load_ibm
    buoyancy, buoyancyFilename, &
    polygon, polyFilename, settlementStart, &
    ibio, ibioFilename,ibioTimeStep, &
-   mort, halflife, &
+   mort, halflife, TempMort, &
    diffpart, diffpartFilename, &
    massSpawning, larvaStart, &
    tidalMovement, tstStart, &
