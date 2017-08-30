@@ -29,6 +29,7 @@ SUBROUTINE move(startR, endR,time_t)
  USE mod_mort
  USE mod_turb
  USE mod_mixedlayerphysics
+ USE mod_TempMort
 
  IMPLICIT NONE
 
@@ -320,7 +321,7 @@ SUBROUTINE move(startR, endR,time_t)
       particle(r)%nlat(n)=ynew
 
 !     interpolate temperature onto particle location if required
-      IF (outputtemp) THEN
+      IF (outputtemp .or. TempMort) THEN
        CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
            dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
            r,n,grid_i,grid_j,grid_k)
@@ -338,6 +339,11 @@ SUBROUTINE move(startR, endR,time_t)
 !     dying particles
       IF (mort) THEN
        flagMort = .false.
+       !if TempMort module is on, use temperature to define halflife of particle (replaces variable assigned earlier)
+       IF (TempMort) THEN
+        CALL define_halflife(particle(r)%temp(n), particle(r)%halflife(n))
+!  print*, 'halflife in move.f90 = ', particle(r)%halflife(n)/86400, 'with temp = ', particle(r)%temp(n)
+       ENDIF
        CALL add_mort(h1,particle(r)%halflife(n),flagMort)
        IF (flagMort .eqv. .true.) THEN     
          flag(8) = .True.
