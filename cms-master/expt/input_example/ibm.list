@@ -17,6 +17,7 @@
 	! Mortality Rate
 	mort			= .false.
 	halflife		= 90000		!in seconds
+	TempMort                = .true.        !will ignore halflife
 	!==============================================================!
 	! Different Particle Attributes Module
 	diffpart		= .false.
