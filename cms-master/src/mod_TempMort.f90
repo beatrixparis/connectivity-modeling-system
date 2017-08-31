@@ -1,3 +1,26 @@
+!****************************************************************************
+!* System: Connectivity Modeling System (CMS)                               *
+!* File : mod_TempMort.f90                                                  *
+!* Last Modified: 2017-Aug-31                                               *
+!* Written by: Sally Wood, University of Bristol (sally.wood@bristol.ac.uk) * 
+!*                                                                          *
+!* Copyright (C) 2011, University of Miami                                  *
+!*                                                                          *
+!* This program is free software: you can redistribute it and/or modify     *
+!* it under the terms of the GNU Lesser General Public License as published *
+!* by the Free Software Foundation, either version 3 of the License, or     *
+!*(at your option) any later version.                                       *
+!*                                                                          *
+!* This program is distributed in the hope that it will be useful,          *
+!* but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+!* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+!* See the Lesser GNU General Public License for more details.              *
+!*                                                                          *
+!* You should have received a copy of the GNU Lesser General                *
+!* Public License along with this program.                                  *
+!* If not, see <http://www.gnu.org/licenses/>.                              *
+!****************************************************************************
+
 MODULE mod_TempMort
 
  USE mod_kinds
@@ -5,7 +28,6 @@ MODULE mod_TempMort
  IMPLICIT NONE
 
  CONTAINS
-
 
 !**************************************************************
 
@@ -37,6 +59,5 @@ MODULE mod_TempMort
  END SUBROUTINE define_halflife
 
 !**************************************************************
-
 
 END MODULE mod_TempMort
