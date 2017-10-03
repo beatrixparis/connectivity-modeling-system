@@ -199,7 +199,7 @@ allocate(polyStrata(pdm))
 END SUBROUTINE load_reef_data_strata
 
 !**************************************************************
-!checks if the release polygons are correct defined
+!checks whether the release points are within a settlement polygon
 SUBROUTINE check_release_polygon(lonStart,latStart,id)
 
 integer (kind=int_kind), intent(in) :: id
@@ -220,8 +220,8 @@ integer (kind=int_kind) :: releasePoly,rflag,i
 
 !Give warning if polygon in release file is not correct. 
  IF (releasePoly /= id) THEN
-    print *, "Warning: polygon id ", id, " in the release file is not correct"
-!    stop
+    print *, "Warning: Release ID", id, " in the release file does not match any settlement polygon, ", &
+    	"is this what you intend?"
  ENDIF     
 
 END SUBROUTINE check_release_polygon 
