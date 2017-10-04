@@ -83,7 +83,8 @@ SUBROUTINE load_runconf
     upperlevelsurface, loopfiles, loopfilesstartyear, loopfilesstartmonth, &
     loopfilesstartday, loopfilesendyear, loopfilesendmonth, loopfilesendday, &
     writerestart, restartfromfile, restartwritefreq, &
-    mixedlayerphysics, mixedlayerwmax
+    mixedlayerphysics, mixedlayerwmax, &
+    trajout
 
  INQUIRE(FILE=trim(fileinput)//'runconf.list',EXIST=file_exists)
  IF (file_exists) THEN
