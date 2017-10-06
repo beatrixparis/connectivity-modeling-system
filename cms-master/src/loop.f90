@@ -481,17 +481,21 @@ SUBROUTINE loop(my_id, npes)
  ENDDO day_loop
 
 !close output file(s)
- CALL close_trajfile
+ IF (trajout) THEN
+   CALL close_trajfile
+ ENDIF
  IF (polygon) THEN
    CALL close_confile
  ENDIF
 
 !copy file from directory SCRATCH to directory output
- CALL rename_file( &
+ IF (trajout) THEN
+   CALL rename_file( &
    adjustl(trim(filescratch))//trim(trajname) &
    ,adjustl(trim(fileoutput ))//trim(trajname) &
    ,Len(adjustl(trim(filescratch))//trim(trajname)) &
    ,Len(adjustl(trim(fileoutput ))//trim(trajname)))
+ ENDIF
 
  IF (polygon) THEN
    CALL rename_file( &
