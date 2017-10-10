@@ -257,8 +257,8 @@ SUBROUTINE getphysicaldata(time_t, basedate)
  nextFile = .false.
 
 !check if temperature can be outputted
-  IF ((outputtemp .eqv. .true.) .and. (tempExist .eqv. .false.)) THEN
-    print *, 'Error: You set outputtemp to true but there are no temperature files'
+  IF ((outputtemp .or. TempMort .eqv. .true.) .and. (tempExist .eqv. .false.)) THEN
+    print *, 'Error: You set outputtemp or TempMort to true but there are no temperature files'
     stop
   ENDIF
 !check if salinity can be outputted
