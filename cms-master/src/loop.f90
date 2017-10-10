@@ -181,6 +181,7 @@ SUBROUTINE loop(my_id, npes)
  ELSE
    basedate=firstfilejulian
  ENDIF
+
 !create the outputfile
  IF (npes .lt. 10) THEN
    write(filename,'(A,I0)') 'file_',my_id+1
@@ -189,8 +190,9 @@ SUBROUTINE loop(my_id, npes)
  ELSE
    write(filename,'(A,I3.3)') 'file_',my_id+1
  ENDIF
-
- CALL init_trajfile(trim(filename), startR, endR)
+ IF (trajout) THEN
+   CALL init_trajfile(trim(filename), startR, endR)
+ ENDIF
  IF (polygon) THEN
    CALL init_confile(trim(filename))
  ENDIF 
@@ -201,10 +203,12 @@ SUBROUTINE loop(my_id, npes)
    DO n=1, particle(r)%num_rel
 !    1) if there are no nestfiles for given data, output -5 to outputfile
      IF (particle(r)%move(n).eqv..false.) THEN
-       IF (ascii) THEN
-         CALL stateout_trajfile_ascii(n,r,startsec,-5)
-       ELSE
-         CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-5,startR)
+       IF (trajout) THEN
+         IF (ascii) THEN
+           CALL stateout_trajfile_ascii(n,r,startsec,-5)
+         ELSE
+           CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-5,startR)
+         ENDIF
        ENDIF
          print *, 'Warning: no data for start time of release line', r ,' so it will not be integrated.'
        IF (nests(1)%time_units == "months") THEN
@@ -216,10 +220,12 @@ SUBROUTINE loop(my_id, npes)
 !      2) if start position is outside grid, output -1 to outputfile
        IF (ngrid .eq. -1) THEN
        print *, 'WARNING: Release line',r,'is outside of the nest grid'
-         IF (ascii) THEN
-           CALL stateout_trajfile_ascii(n,r,startsec,-1)
-         ELSE
-           CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-1,startR)
+         IF (trajout) THEN
+           IF (ascii) THEN
+             CALL stateout_trajfile_ascii(n,r,startsec,-1)
+           ELSE
+             CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-1,startR)
+	   ENDIF
          ENDIF
          particle(r)%move(n) = .false.
        ELSE 
@@ -243,22 +249,26 @@ SUBROUTINE loop(my_id, npes)
        IF (nests(ngrid)%fill_value .ne. 0.) THEN
          IF ((flag(1) .and. flag(2)) .or. landFlag)  THEN
 	 print *, 'WARNING: Release line',r,'is on land'
+         IF (trajout) THEN
            IF (ascii) THEN
              CALL stateout_trajfile_ascii(n,r,startsec,-2)
            ELSE
              CALL stateout_trajfile_netcdf(n,r,startsec,startsec,-2,startR)
            ENDIF
+	 ENDIF
            particle(r)%move(n) = .false.
          ENDIF !checking land flags
        ENDIF !IF (nests(ngrid)%fill_value .ne. 0.)      
        
 !      4) if the start position is fine, output the start location
        IF ((flag(1) .eqv. .false.) .and. (flag(2) .eqv. .false.) .and. (landFlag .eqv. .false.)) THEN
-       	IF (ascii) THEN
-         CALL stateout_trajfile_ascii(n,r,startsec,0)
-       	ELSE
-         CALL stateout_trajfile_netcdf(n,r,startsec,startsec,0,startR)
-       	ENDIF
+        IF (trajout) THEN
+  	  IF (ascii) THEN
+            CALL stateout_trajfile_ascii(n,r,startsec,0)
+       	  ELSE
+            CALL stateout_trajfile_netcdf(n,r,startsec,startsec,0,startR)
+       	  ENDIF
+        ENDIF
        ENDIF !no land flags  
        
      ENDIF !check if particle is inside grid (ngrid .eq. -1)
@@ -307,12 +317,14 @@ SUBROUTINE loop(my_id, npes)
            run_time = time_t - particle(r)%start
 !          Particle leaving model area
            IF(particle(r)%flag(n,7)) THEN
-             IF (ascii) THEN
-               CALL stateout_trajfile_ascii(n,r,run_time,-1)
-             ELSE
-               CALL stateout_trajfile_netcdf(n,r, &
-               run_time+mod(outputFreq-mod(run_time,outputFreq), outputFreq), &
-               time_t,-1, startR)
+             IF (trajout) THEN
+               IF (ascii) THEN
+                 CALL stateout_trajfile_ascii(n,r,run_time,-1)
+               ELSE
+                 CALL stateout_trajfile_netcdf(n,r, &
+                 run_time+mod(outputFreq-mod(run_time,outputFreq), outputFreq), &
+                 time_t,-1, startR)
+               ENDIF
              ENDIF
              particle(r)%move(n) = .false.
              goto 50
@@ -320,12 +332,14 @@ SUBROUTINE loop(my_id, npes)
      
 !          Particle is on land
            IF(particle(r)%flag(n,1) .and. particle(r)%flag(n,2)) THEN  
-             IF (ascii) THEN
-               CALL stateout_trajfile_ascii(n,r,run_time,-2)
-             ELSE   
-               CALL stateout_trajfile_netcdf(n,r, &
-               run_time+ mod(outputFreq - mod(run_time,outputFreq), outputFreq), &
-               time_t,-2, startR)
+             IF (trajout) THEN
+               IF (ascii) THEN
+                 CALL stateout_trajfile_ascii(n,r,run_time,-2)
+               ELSE   
+                 CALL stateout_trajfile_netcdf(n,r, &
+                 run_time+ mod(outputFreq - mod(run_time,outputFreq), outputFreq), &
+                 time_t,-2, startR)
+               ENDIF
              ENDIF
              particle(r)%move(n) = .false.
              goto 50
@@ -333,12 +347,14 @@ SUBROUTINE loop(my_id, npes)
 
 !          Particle is outside time domain
            IF (particle(r)%flag(n,10)) THEN
-             IF (ascii) THEN
-               CALL stateout_trajfile_ascii(n,r,run_time,-5)
-             ELSE
-               CALL stateout_trajfile_netcdf(n,r, &
-               run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-               time_t, -5, startR)
+             IF (trajout) THEN
+               IF (ascii) THEN
+                 CALL stateout_trajfile_ascii(n,r,run_time,-5)
+               ELSE
+                 CALL stateout_trajfile_netcdf(n,r, &
+                 run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+                 time_t, -5, startR)
+               ENDIF
              ENDIF
              particle(r)%move(n) = .false.
              goto 50
@@ -347,12 +363,14 @@ SUBROUTINE loop(my_id, npes)
 !          Particle is dead
            IF (mort) THEN
              IF (particle(r)%flag(n,8)) THEN
-               IF (ascii) THEN
-                 CALL stateout_trajfile_ascii(n,r,run_time,-3)
-               ELSE
-                 CALL stateout_trajfile_netcdf(n,r, &
-                 run_time+mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-                 time_t,-3, startR)
+               IF (trajout) THEN
+                 IF (ascii) THEN
+                   CALL stateout_trajfile_ascii(n,r,run_time,-3)
+                 ELSE
+                   CALL stateout_trajfile_netcdf(n,r, &
+                   run_time+mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+                   time_t,-3, startR)
+                 ENDIF
                ENDIF
                particle(r)%move(n) = .false.
                goto 50   
@@ -366,42 +384,46 @@ SUBROUTINE loop(my_id, npes)
 	           IF (strata) THEN
 	             CALL check_strata(particle(r)%ndepth(n),strataValue)
 	             IF (strataValue > 0) THEN
-                   CALL check_reef_recruitment_strata(particle(r)%nlon(n), &
-                   particle(r)%nlat(n), particle(r)%ndepth(n),run_time, &
-                   julian,r,pflag,strataValue)
+                       CALL check_reef_recruitment_strata(particle(r)%nlon(n), &
+                       particle(r)%nlat(n), particle(r)%ndepth(n),run_time, &
+                       julian,r,pflag,strataValue)
 	             ELSE
-!	               Because the particles does not enter the loop unless 
-!                  it's in a strata, set pflag to -1 for particles outside strata
-	   	           pflag=-1
-	             ENDIF
-	          ELSE
+!	             Because the particles does not enter the loop unless 
+!                    it's in a strata, set pflag to -1 for particles outside strata
+	   	     pflag=-1
+	           ENDIF
+	         ELSE
 	             CALL check_reef_recruitment(particle(r)%nlon(n),particle(r)%nlat(n), &
 	             particle(r)%ndepth(n),run_time,julian,r,pflag)
-	          ENDIF
+	         ENDIF
              
-	          IF (pflag == 1) THEN
-	!           Particle is inside a polygon
-	            IF (ascii) THEN
-	              CALL stateout_trajfile_ascii(n,r,run_time,-4)
-	            ELSE
-	              CALL stateout_trajfile_netcdf(n,r, &
-	              run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
-	              time_t,-4,startR)
-	            ENDIF
-	            particle(r)%move(n)= .false.
-	            goto 50
-	          ENDIF
-            ENDIF
+	         IF (pflag == 1) THEN
+!                Particle is inside a polygon
+	           IF (trajout) THEN
+                     IF (ascii) THEN
+	               CALL stateout_trajfile_ascii(n,r,run_time,-4)
+	             ELSE
+	               CALL stateout_trajfile_netcdf(n,r, &
+	               run_time+ mod(outputFreq - mod(run_time,outputFreq),outputFreq), &
+	               time_t,-4,startR)
+	             ENDIF
+                   ENDIF
+	           particle(r)%move(n)= .false.
+	           goto 50
+	         ENDIF !IF (pflag == 1)
+               ENDIF !IF (polygon)
           ENDIF
 
 !         particle that is still moving
 !         only write output data every outputFreq time.
 	      IF (mod(run_time,outputFreq).eq.0.) THEN
-	        IF (ascii) THEN
-	          CALL stateout_trajfile_ascii(n,r,run_time,0)
-	        ELSE
-	          CALL stateout_trajfile_netcdf(n,r,run_time,time_t,0,startR)
-	        ENDIF
+                IF (trajout) THEN
+                  IF (ascii) THEN
+	            CALL stateout_trajfile_ascii(n,r,run_time,0)
+	          ELSE
+	            CALL stateout_trajfile_netcdf(n,r,run_time,time_t,0,startR)
+	          ENDIF
+                ENDIF
 	      ENDIF
 !         particle is not allowed to move is release date is not yet reached
           IF (run_time .ge. timeMax) THEN
@@ -459,17 +481,21 @@ SUBROUTINE loop(my_id, npes)
  ENDDO day_loop
 
 !close output file(s)
- CALL close_trajfile
+ IF (trajout) THEN
+   CALL close_trajfile
+ ENDIF
  IF (polygon) THEN
    CALL close_confile
  ENDIF
 
 !copy file from directory SCRATCH to directory output
- CALL rename_file( &
+ IF (trajout) THEN
+   CALL rename_file( &
    adjustl(trim(filescratch))//trim(trajname) &
    ,adjustl(trim(fileoutput ))//trim(trajname) &
    ,Len(adjustl(trim(filescratch))//trim(trajname)) &
    ,Len(adjustl(trim(fileoutput ))//trim(trajname)))
+ ENDIF
 
  IF (polygon) THEN
    CALL rename_file( &

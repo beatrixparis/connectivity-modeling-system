@@ -60,7 +60,7 @@ MODULE globalvariables
                                   buoyancyFilename
  logical (kind=log_kind)       :: polygon, buoyancy, ibio,turb, mort, avoidcoast, &
                                   diffpart, periodicbc, massSpawning, &
-                                  tidalMovement, backward, ascii, &
+                                  tidalMovement, backward, ascii, trajout, &
                                   upperlevelsurface=.true., loopfiles, &
                                   restartfromfile=.false., &
                                   mixedlayerphysics=.false., agrid=.true., &

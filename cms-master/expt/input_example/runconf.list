@@ -25,24 +25,27 @@ backward             = .false.
 ascii                = .false.
 !====================================================================!
 !Flag to limit particle vertical movement to upper layer
-upperlevelsurface       = .true.
+upperlevelsurface    = .true.
 !====================================================================!
 !Flag for looping through the velocity fields
-loopfiles               = .false.
-loopfilesstartyear      = 0
-loopfilesstartmonth     = 0
-loopfilesstartday       = 0
-loopfilesendyear        = 0
-loopfilesendmonth       = 0
-loopfilesendday         = 0
+loopfiles            = .false.
+loopfilesstartyear   = 0
+loopfilesstartmonth  = 0
+loopfilesstartday    = 0
+loopfilesendyear     = 0
+loopfilesendmonth    = 0
+loopfilesendday      = 0
 !====================================================================!
 !Options for saving restart files and restarting
-writerestart            = .false.
-restartfromfile         = .false.
-restartwritefreq        = 0            !in seconds
+writerestart         = .false.
+restartfromfile      = .false.
+restartwritefreq     = 0            !in seconds
 !====================================================================!
 !Options for mixed layer physics
-mixedlayerphysics       = .false.
-mixedlayerwmax          = 0
+mixedlayerphysics    = .false.
+mixedlayerwmax       = 0
+!====================================================================!
+!Option to turn the trajectory output off (set .false.)
+trajout              = .true.
 !====================================================================!
 &end
