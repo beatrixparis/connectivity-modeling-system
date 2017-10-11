@@ -23,7 +23,7 @@
 !****************************************************************************
 
 !calculates the new position of the particle every timestep.
-!writes output file
+!writes output file(s)
 SUBROUTINE loop(my_id, npes)
 
  USE constants
@@ -67,35 +67,33 @@ SUBROUTINE loop(my_id, npes)
  ENDIF
  ppesReal = (real (sze)) / (real (npes))
  ppes = ceiling(ppesReal)
-
-! ! DH trying to correct error
+ 
+!distributing release lines among processors (DH/AV working on)
  IF ((((npes-1)*ppes)+1) .gt. sze) THEN
   ppes = ceiling(ppesReal)-1
  ENDIF 
-
  startR = (my_id*ppes)+1
  endR = (startR + ppes-1)
-
-! ! DH trying to correct error
  IF (startR .eq. ((npes-1)*ppes+1)) THEN
   endR = sze
  ENDIF
-
- ! This statement may no longer be necessary?
  IF ((startR + ppes) .gt. sze) THEN
   endR = sze
  ENDIF
 
+ !read restartfile if restartfromfile = .true.
  IF (restartfromfile) THEN
    write(filename,'(A,I0)') 'file_',my_id+1
    CALL readrestartfile(trim(filename),startR,endR,time_t)
    startsec = time_t
    time_t_first = time_t + timeStep
  ELSE
-!  define density, diameter and halflife of all particle
+ 
+!otherwise, initialise the run...
+  !define density, diameter and halflife of all particles
    DO r=startR,endR
      IF (withibm) THEN
-!      get size and density of the particle from diffpart input file
+       ! get size and density of the particles from diffpart input file if provided
        IF (diffPart) THEN
          DO n=1, particle(r)%num_rel
            CALL random_int(0,100,rnInt)
@@ -108,7 +106,9 @@ SUBROUTINE loop(my_id, npes)
              ENDIF ! end if rnINT
            ENDDO size_loop
          ENDDO
-       ELSE !else if not diffpart, but withibm
+       !else if diffpart file is not provided...
+       ELSE 
+         !define size and density of particles if bouyancy = true
          IF (buoyancy) THEN
            buoyancy_index=1
            buoyancy_time=buoyancyTime(buoyancy_index)
@@ -119,6 +119,7 @@ SUBROUTINE loop(my_id, npes)
              particle(r)%density(n))
            ENDDO
          ENDIF
+	 !define halflife of particles if mort = true
          IF (mort) THEN
            particle(r)%halflife = halflife
          ENDIF
@@ -129,15 +130,18 @@ SUBROUTINE loop(my_id, npes)
      particle(r)%oldk=0.
    ENDDO
 
-!  check if release polygons are correct if polygon is set to true
+   !check if release IDs match polygon IDs if polygon is set to true (optional)
    IF(polygon) THEN
      DO r=startR,endR
        CALL check_release_polygon(particle(r)%ilon,particle(r)%ilat,particle(r)%id)
      ENDDO
    ENDIF
+   
+   !initialise time counters
    startsec = 0
    time_t_first = timeStep
- ENDIF !end if start from restart
+   
+ ENDIF !end if start from restart file
 
 !set dataExist to true for now, as it is needed in findgrid
  DO n=1, nnests
@@ -182,7 +186,7 @@ SUBROUTINE loop(my_id, npes)
    basedate=firstfilejulian
  ENDIF
 
-!create the outputfile
+!create the outputfile(s)
  IF (npes .lt. 10) THEN
    write(filename,'(A,I0)') 'file_',my_id+1
  ELSEIF (npes .lt. 100) THEN
