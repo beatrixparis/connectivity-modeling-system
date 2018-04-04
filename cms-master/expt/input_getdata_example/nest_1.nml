@@ -1,4 +1,4 @@
-	&nest_input
+&nest_input
 	filename = "http://tds.hycom.org/thredds/dodsC/GLBu0.08/expt_91.1"
  	xaxis = "lon"
  	yaxis = "lat"
@@ -39,4 +39,4 @@
  	angle_file = ""
  	fill_value = -30
  	agrid = .true.
-	$end
+$end

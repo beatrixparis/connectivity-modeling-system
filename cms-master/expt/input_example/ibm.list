@@ -6,8 +6,8 @@
 	!==============================================================!
 	! Seascape Module
 	polygon		        = .false.
-	polyFilename 	    	= "Caribbean.xyz"
-	settlementStart	  	= 160		!in days
+	polyFilename 	    	= "poly_example.xyz"
+	settlementStart	  	= 2		!in days
 	!==============================================================!
 	! Probability Matrix of Vertical Migration
 	ibio 			= .false.
@@ -20,7 +20,7 @@
 	!==============================================================!
 	! Different Particle Attributes Module
 	diffpart		= .false.
-	diffpartFilename  	= "diffpart_matrix"
+	diffpartFilename  	= ""
 	!==============================================================!
 	! Combined Buoyancy and Vertical Migration 
 	massSpawning		= .false.
