@@ -3,23 +3,24 @@ To check that your installation of CMS has worked correctly, you can also use th
 
 1. Make sure you are in the directory /expt. You should see the directories /input_getdata_example and /input_example.
 
-2. Create links to the executables cms and getdata (see user guide) by typing:
+2. Create links to the executables cms and getdata by typing:
 
 	> ln -s ../src/cms cms        
 	> ln -s ../src/getdata getdata
 
-3. Run getdata to download HYCOM data files needed to run the test using the example by typing:
+3. Run getdata to download oceanographic files needed to run the test by typing:
 
 	> ./getdata getdata_example 1
 
 This will download and format 13 days (1-13 Jan 2016) of surface ocean current data from the HYCOM global analysis (https://hycom.org/data/glbu0pt08/expt-91pt1). 
-The formatted daily nest files will be placed in a new directory /expt_getdata_example/nests.
+The resulting formatted nest files will be placed in a new directory: /expt_getdata_example/nests.
 
 4. Either move or create a link to the nest files in /expt_example by typing:
 
 	> mv -r expt_getdata_example/nests expt_example/nests      
 or....
-	> ln -s ../expt_getdata/nests ./expt_example/
+	> cd expt_example
+	> ln -s ../expt_getdata_example/nests nests
 
 5. Run the cms test using the example input files in /input_example by typing:
 

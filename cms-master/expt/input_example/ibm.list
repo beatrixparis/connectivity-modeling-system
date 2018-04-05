@@ -2,7 +2,7 @@
 	!==============================================================!
 	! Buoyancy Module
 	Buoyancy          	= .false.
-	buoyancyFilename  	= "buoyancytest"
+	buoyancyFilename  	= "buoyancy_example"
 	!==============================================================!
 	! Seascape Module
 	polygon		        = .false.
@@ -11,7 +11,7 @@
 	!==============================================================!
 	! Probability Matrix of Vertical Migration
 	ibio 			= .false.
-	ibioFilename	    	= "vert_matrix"
+	ibioFilename	    	= "vert_matrix_example"
 	ibioTimeStep	    	= 259200	!in seconds
 	!==============================================================!
 	! Mortality Rate
@@ -32,7 +32,7 @@
 	!==============================================================!
 	! Adding strata for 3D polygons
 	strata			= .false.
-	strataFilename		= "strataFile"
+	strataFilename		= "strata_example"
 	!==============================================================!
 	! Output temperature/salinity in netcdf file
 	outputtemp		= .false.
