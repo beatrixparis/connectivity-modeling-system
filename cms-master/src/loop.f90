@@ -465,8 +465,8 @@ SUBROUTINE loop(my_id, npes)
             buoyancy_index = numBuoyancy
          ENDIF
          buoyancy_time = buoyancyTime(buoyancy_index)
-         print *, "run_timeb, time_t, particle_start", run_timeb, time_t, particle(r)%start
-         print *, " buoyancy time, buoyancy_index", buoyancy_time, buoyancy_index
+         !print *, "run_timeb, time_t, particle_start", run_timeb, time_t, particle(r)%start
+         !print *, " buoyancy time, buoyancy_index", buoyancy_time, buoyancy_index
          DO n=1, particle(r)%num_rel
            IF (particle(r)%move(n) .eqv. .true.) THEN
              CALL random_real(MinDiam(buoyancy_index), MaxDiam(buoyancy_index), particle(r)%diam(n))
@@ -478,21 +478,6 @@ SUBROUTINE loop(my_id, npes)
    
    ENDIF !start time lt time  
   ENDDO !end loop: r=startR,endR
-
-!  IF (buoyancy) THEN
-!    !check if time_t (simulation time) is equal to times at which dens
-!    !and diam should change, defined by buoyancy_time (user defined times)
-!    IF ((time_t .gt. buoyancy_time) .and. (buoyancy_index .lt. numBuoyancy)) THEN
-!      buoyancy_index=buoyancy_index+1
-!      buoyancy_time=buoyancyTime(buoyancy_index)
-!      DO r=startR,endR
-!        DO n=1, particle(r)%num_rel
-!          CALL random_real(MinDiam(buoyancy_index),MaxDiam(buoyancy_index),particle(r)%diam(n))
-!          CALL random_real(MinDens(buoyancy_index),MaxDens(buoyancy_index),particle(r)%density(n))
-!        ENDDO
-!      ENDDO
-!    ENDIF
-!  ENDIF
 
 ! check if all particles are finished
   allFinished = .true.
