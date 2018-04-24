@@ -48,8 +48,8 @@ SUBROUTINE loop(my_id, npes)
      strataValue, & !for vert_conn
      ppes, startR, endR, & !for mpi
      rnInt,julian,firstfilejulian,lastfilejulian,yymm,basedate, &
-     ngrid, buoyancy_index  
- integer (kind=int8_kind):: time_t, run_time, startsec, time_t_first, maxparticlestart, buoyancy_time
+     ngrid, buoyancy_index, ibaux
+ integer (kind=int8_kind):: time_t, run_time, startsec, time_t_first, maxparticlestart, buoyancy_time, run_timeb
  logical (kind=log_kind) :: allFinished, timeFlag,flag(6), landflag
  real (kind = real_kind) :: ppesReal,un,vn,wn,tn,sn,rn,newi(QAx),newj(QAx),newk(QAx)
  character(char_len)     :: rfname, filename
@@ -436,10 +436,12 @@ SUBROUTINE loop(my_id, npes)
         ENDIF
 50      continue
       ENDDO ! END loop: n=1, particle(r)%num_rel
-
-!     If larvaStart is passed then change from buoyancy to ibio
-      IF (massSpawning) THEN
-        IF ((eggTimePassed(r) .eqv. .false.) .and. (run_time .ge. (larvaStart*secs_in_day))) THEN
+   !ENDIF Ana is moving this endif to the end - only will check if masspawning, and if the eggphase 
+    !ended if particle was spawned!
+     
+!    If larvaStart is passed then change from buoyancy to ibio
+     IF (massSpawning) THEN
+       IF ((eggTimePassed(r) .eqv. .false.) .and. (run_time .ge. (larvaStart*secs_in_day))) THEN
           eggTimePassed(r) = .true.
           DO n=1,particle(r)%num_rel
             CALL set_layer(particle(r)%ndepth(n), layer)
@@ -448,23 +450,49 @@ SUBROUTINE loop(my_id, npes)
         ENDIF
       ENDIF
       
-    ENDIF
+     IF (buoyancy) THEN
+       IF (particle(r)%start .lt. time_t) THEN
+         buoyancy_index = 99
+         run_timeb = time_t - particle(r)%start
+         !check if time_t (simulation time) is equal to times at which dens
+         !and diam should change, defined by buoyancy_time (user defined times)
+         DO ibaux=1, numBuoyancy
+           IF ((run_timeb .lt. (buoyancyTime(ibaux) - timeStep)) .and. (buoyancy_index .eq. 99)) THEN
+             buoyancy_index = ibaux
+           ENDIF    
+         ENDDO
+         IF (buoyancy_index .eq. 99) THEN
+            buoyancy_index = numBuoyancy
+         ENDIF
+         buoyancy_time = buoyancyTime(buoyancy_index)
+         print *, "run_timeb, time_t, particle_start", run_timeb, time_t, particle(r)%start
+         print *, " buoyancy time, buoyancy_index", buoyancy_time, buoyancy_index
+         DO n=1, particle(r)%num_rel
+           IF (particle(r)%move(n) .eqv. .true.) THEN
+             CALL random_real(MinDiam(buoyancy_index), MaxDiam(buoyancy_index), particle(r)%diam(n))
+             CALL random_real(MinDens(buoyancy_index), MaxDens(buoyancy_index), particle(r)%density(n))
+           ENDIF  
+         ENDDO
+       ENDIF   !if run time
+     ENDIF !if buoyancy
+   
+   ENDIF !start time lt time  
   ENDDO !end loop: r=startR,endR
 
-  IF (buoyancy) THEN
-    !check if time_t (simulation time) is equal to times at which dens
-    !and diam should change, defined by buoyancy_time (user defined times)
-    IF ((time_t .gt. buoyancy_time) .and. (buoyancy_index .lt. numBuoyancy)) THEN
-      buoyancy_index=buoyancy_index+1
-      buoyancy_time=buoyancyTime(buoyancy_index)
-      DO r=startR,endR
-        DO n=1, particle(r)%num_rel
-          CALL random_real(MinDiam(buoyancy_index),MaxDiam(buoyancy_index),particle(r)%diam(n))
-          CALL random_real(MinDens(buoyancy_index),MaxDens(buoyancy_index),particle(r)%density(n))
-        ENDDO
-      ENDDO
-    ENDIF
-  ENDIF
+!  IF (buoyancy) THEN
+!    !check if time_t (simulation time) is equal to times at which dens
+!    !and diam should change, defined by buoyancy_time (user defined times)
+!    IF ((time_t .gt. buoyancy_time) .and. (buoyancy_index .lt. numBuoyancy)) THEN
+!      buoyancy_index=buoyancy_index+1
+!      buoyancy_time=buoyancyTime(buoyancy_index)
+!      DO r=startR,endR
+!        DO n=1, particle(r)%num_rel
+!          CALL random_real(MinDiam(buoyancy_index),MaxDiam(buoyancy_index),particle(r)%diam(n))
+!          CALL random_real(MinDens(buoyancy_index),MaxDens(buoyancy_index),particle(r)%density(n))
+!        ENDDO
+!      ENDDO
+!    ENDIF
+!  ENDIF
 
 ! check if all particles are finished
   allFinished = .true.
