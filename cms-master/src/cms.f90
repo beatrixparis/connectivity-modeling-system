@@ -24,7 +24,7 @@
 
 PROGRAM CMS
 
- USE MPI !remove if not using mpi
+! USE MPI !remove if not using mpi
  USE globalvariables
  USE mod_random
  
@@ -40,11 +40,11 @@ PROGRAM CMS
  npes = 1 !used if not using mpi
 
 !initialise MPI
- CALL MPI_INIT(ierr) !remove if not using mpi
+! CALL MPI_INIT(ierr) !remove if not using mpi
 !what processor am I (what is my rank)?
- CALL MPI_COMM_RANK(MPI_COMM_WORLD, my_id, ierr) !remove if not using mpi
+! CALL MPI_COMM_RANK(MPI_COMM_WORLD, my_id, ierr) !remove if not using mpi
 !how many processors are there?
- CALL MPI_COMM_SIZE(MPI_COMM_WORLD, npes, ierr) !remove if not using mpi
+! CALL MPI_COMM_SIZE(MPI_COMM_WORLD, npes, ierr) !remove if not using mpi
 
 !check which experiment to run
  IF (command_argument_count() .eq. 0) THEN
@@ -91,6 +91,6 @@ PROGRAM CMS
  CALL dealloc_all 
 
 !quit MPI
- CALL MPI_FINALIZE(ierr) !remove if not using mpi
+ !CALL MPI_FINALIZE(ierr) !remove if not using mpi
      
 END PROGRAM CMS

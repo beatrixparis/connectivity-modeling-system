@@ -1,0 +1,4 @@
+*.o
+*.mod
+cms-master/src/cms
+cms-master/src/getdata

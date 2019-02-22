@@ -1,6 +1,6 @@
 #
 
-include ../arch/mpi_compiler
+include ../arch/gfortran_compiler
 
 .SUFFIXES: 
 .SUFFIXES: .cpp .c .F .f .o .f90
