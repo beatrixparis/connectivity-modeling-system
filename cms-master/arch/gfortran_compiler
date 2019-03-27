@@ -7,23 +7,25 @@ FCFLAGS      = -I/usr/include
 #the C-compiler to create object files
 CC            = gcc
 #the C flags to create object files
-CCFLAGS       = -O 
+CCFLAGS       = -O
 
 #the Fortran compiler to create executable
 LD            = $(FC)
 #the Fortran flags to create executable
 LDFLAGS       =  -L/usr/lib -lnetcdf -lnetcdff -lcurl -lm
-EXTRALIBS     = 
+EXTRALIBS     =
 
 # Rules
 
 .c.o:
-	$(CC) -c $*.c $(CCFLAGS) 
+	$(CC) -c $*.c $(CCFLAGS)
 
 .f90.o:
-	$(FC) -c $*.f90 $(FCFLAGS) 
+	$(FC) -c $*.f90 $(FCFLAGS)
 
 .f.o:
-	$(FC) -c $*.f $(FCFLAGS) 
+	$(FC) -c $*.f $(FCFLAGS)
 
+.F90.o:
+	$(FC) -c $*.F90 $(FCFLAGS)
 
