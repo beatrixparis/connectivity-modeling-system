@@ -34,7 +34,7 @@ PROGRAM CMS
 
  EXTERNAL directory
 
- character(char_len)     :: filenumber
+ character(char_len)     :: filenumber, argstring
  integer (kind=int_kind) :: ierr, my_id, npes, number1, number2
  logical (kind=log_kind) :: file_exists
 
@@ -58,10 +58,17 @@ PROGRAM CMS
  CALL getarg(1,filenumber)
 
 !initialise random seed for random number generator
- CALL SYSTEM_CLOCK(COUNT=number1)
- CALL SYSTEM_CLOCK(COUNT=number2)
- number1 = abs(mod((number1*(my_id+1)),31328))
- number2 = abs(mod((number2*(my_id+1)),30081))
+ IF (command_argument_count() .eq. 3) THEN
+    CALL getarg(2, argstring)
+    read(argstring, *) number1
+    CALL getarg(3, argstring)
+    read(argstring, *) number2
+ ELSE
+    CALL SYSTEM_CLOCK(COUNT=number1)
+    CALL SYSTEM_CLOCK(COUNT=number2)
+    number1 = abs(mod((number1*(my_id+1)),31328))
+    number2 = abs(mod((number2*(my_id+1)),30081))
+ ENDIF
  CALL random_initialize (number1,number2)
 
 !check whether input runconf file exists
