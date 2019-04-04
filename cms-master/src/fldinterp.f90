@@ -2,8 +2,8 @@
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : fldinterp.f90                                                     *
 !* Last Modified: 2016-07-19                                                *
-!* Code contributors: Claire B Paris, Ana Carolina Vaz, Judith Helgers,     * 
-!*                    Ashwanth Srinivasan, Erik van Sebille                 * 
+!* Code contributors: Claire B Paris, Ana Carolina Vaz, Judith Helgers,     *
+!*                    Ashwanth Srinivasan, Erik van Sebille                 *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
 !*                                                                          *
@@ -37,11 +37,11 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
      nweight,& !number of weights for interpolation
      ngrid
  real (kind = real_kind),intent(in)  :: &
-     fillvalue,ilon,ilat,idepth,  &   
+     fillvalue,ilon,ilat,idepth,  &
      fld (nlon, nlat, ndepth,nweight), & !gridded fields array
      weight(nweight)
  real (kind = real_kind),intent(out) :: value   !interpolated value
- logical (kind=log_kind), intent(out):: &  
+ logical (kind=log_kind), intent(out):: &
      fail, &  !(false) successful interpolation
      landFlag !(false) point is in water
 
@@ -50,7 +50,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
      r, & !fractional parts of ilon
      s, & !fractional parts of ilat
      t, & !fractional parts of idepth
-     point1, point2, point3, point4,a,b,c,d,c01,c11,c10,c00,c0,c1, & 
+     point1, point2, point3, point4,a,b,c,d,c01,c11,c10,c00,c0,c1, &
      distance, fldTotal, distTotal,minDistance, minValue
  integer (kind=int_kind) :: counter, ilon_int, ilat_int, idepth_int, &
      i, i1, i2, j, j1, j2, k, k1, k2, xmin, xmax, ymin, ymax, zmin, zmax, countLand, new_x,x,y,z
@@ -63,14 +63,14 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
  ymax = nlat+1
  zmin = 1
  zmax = ndepth
-   
+
  landFlag = .false.
  countLand = 0
 
  IF (interpversion .eq. 1) THEN
 !  Handling 2d data
    IF (ndepth==1) THEN
-!    ensure position is on the grid     
+!    ensure position is on the grid
      IF ((ilon .ge. real (xmin) .and. ilon .le. real (xmax) .and. &
      ilat .ge. real (ymin) .and. ilat .le. real (ymax)) .or. &
      (periodicbc)) THEN
@@ -79,7 +79,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
 	    ilon_int = int (ilon)
 	    ilat_int = int (ilat)
 	    idepth_int = int (idepth)
-	    r = ilon - real (ilon_int)    
+	    r = ilon - real (ilon_int)
 	    s = ilat - real (ilat_int)
 	    t = idepth - real (idepth_int)
         DO j = 1,4
@@ -92,7 +92,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
             is_in_minmax_range = ((x>=xmin) .and. (x<=xmax) .and. &
             (y>=ymin) .and. (y<=ymax) .and. (z>=zmin) .and. (z<=zmax))
             is_inside_bounds = (y<=size(fld, dim=2))
-          
+
             IF (is_in_minmax_range .and. is_inside_bounds) THEN
            !IF (x .ge. xmin .and. x .le. xmax .and. y .ge. ymin &
            !.and. y .le. ymax) THEN
@@ -114,7 +114,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
                   IF (nweight .eq. 2 .and. fld(new_x,y,z,2) .ge. fillvalue &
                   .and. fld(new_x,y,z,1) .lt. fillvalue) THEN
                     fld2d(i,j) = fld(new_x,y,z,1)
-                  ELSE 
+                  ELSE
                     DO counter = 1, nweight
                       fld2d(i,j) = fld2d(i,j) + weight(counter) * fld(new_x,y,z,counter)
                     ENDDO
@@ -142,7 +142,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
           DO j = j1, j2
             DO i = i1, i2
 !             print *, i, " ", j, ": ", fld2d(i,j)
-              IF (fld2d(i,j) .gt. fillvalue) THEN
+              IF (fld2d(i,j) .ge. fillvalue) THEN
                 bicubic = .false.
               ENDIF
             ENDDO
@@ -151,7 +151,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
 
         IF (bicubic) THEN
 !         bicubic interpolation
-          DO j = 1,4     
+          DO j = 1,4
             point1  = fld2d(1,j)
 	        point2  = fld2d(2,j)
 	        point3  = fld2d(3,j)
@@ -179,19 +179,19 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
           point3 = fld2d(3,3)
           point4 = fld2d(2,2)
 
-          IF (point1  .gt. fillvalue) THEN
+          IF (point1  .ge. fillvalue) THEN
             countLand = countLand+1
             point1 = 0
           ENDIF
-	      IF (point2  .gt. fillvalue) THEN
+	      IF (point2  .ge. fillvalue) THEN
 	        countLand = countLand+1
 	        point2 = 0
 	      ENDIF
-	      IF (point3  .gt. fillvalue) THEN
+	      IF (point3  .ge. fillvalue) THEN
 	        countLand = countLand+1
 	        point3 = 0
 	      ENDIF
-	      IF (point4  .gt. fillvalue) THEN
+	      IF (point4  .ge. fillvalue) THEN
 	        countLand = countLand+1
 	        point4 = 0
 	      ENDIF
@@ -210,15 +210,15 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
             ELSE
               fail = .false.
             ENDIF
-          ENDIF 
-        ENDIF 
+          ENDIF
+        ENDIF
       ELSE
-!       IF particle is not on 2d grid  
+!       IF particle is not on 2d grid
         value = 0
         fail = .true.
       ENDIF
-   ELSE 
-!    Handling 3d data 
+   ELSE
+!    Handling 3d data
 !    ensure position is on the grid
      IF (ilon .ge. real (xmin) .and. ilon .le. real (xmax) .and. &
      ilat .ge. real (ymin) .and. ilat .le. real (ymax) .and. &
@@ -260,7 +260,7 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
                    IF (nweight .eq. 2 .and. abs(fld(new_x,y,z,2)) .ge. &
                    fillvalue .and. abs(fld(new_x,y,z,1)) .lt. fillvalue) THEN
                      fld3d(i,j,k) = fld(new_x,y,z,1)
-                   ELSE 
+                   ELSE
                      DO counter = 1, nweight
                        fld3d(i,j,k) = fld3d(i,j,k) + weight(counter)*fld(new_x,y,z,counter)
                      ENDDO
@@ -300,13 +300,13 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
        DO k = k1, k2
          DO j = j1, j2
            DO i = i1, i2
-!          print *, i, " ", j, " ", k, ": ", fld3d(i,j,k)
-             IF (abs(fld3d(i,j,k)) .gt. fillvalue) THEN
+         ! print *, i, " ", j, " ", k, ": ", fld3d(i,j,k)
+             IF (abs(fld3d(i,j,k)) .ge. fillvalue) THEN
                tricubic = .false.
                IF ((i .eq. 2 .or. i .eq. 3) .and. (j .eq. 2 .or. j .eq. 3) .and. (k .eq. 2 .or. k .eq. 3)) THEN
 !                one of the surrounding 8 points is missing
                  trilinear = .false.
-!                count the points that are on land  
+!                count the points that are on land
                  countLand = countLand + 1
                ENDIF
              ENDIF
@@ -352,8 +352,8 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
                  ENDIF
                  IF (fld3d(i,j,k) .lt. fillvalue) THEN
                    distTotal = distTotal + (1/distance)
-                   fldTotal = fldTotal + (fld3d(i,j,k)/distance) 
-                 ENDIF   
+                   fldTotal = fldTotal + (fld3d(i,j,k)/distance)
+                 ENDIF
                ENDIF
              ENDDO
            ENDDO
@@ -371,10 +371,10 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
          ENDIF
        ELSE IF (tricubic) THEN
 !        perform tricubic interpolation
-         DO j = 1,4 
+         DO j = 1,4
            DO k = 1,4
 	         point1  = fld3d(1,j,k)
-	         point2  = fld3d(2,j,k)  
+	         point2  = fld3d(2,j,k)
 	         point3  = fld3d(3,j,k)
 	         point4  = fld3d(4,j,k)
 	         a = -sixth*point1 + half*point2 - half*point3 + sixth*point4
@@ -407,25 +407,25 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
 	     fail = .false.
        ELSE IF (trilinear) THEN
 !        perform trilinear interpolation
-         IF (idepth .eq. zmax .and. ilon .eq. xmax .and. ilat .eq. ymax) THEN 
+         IF (idepth .eq. zmax .and. ilon .eq. xmax .and. ilat .eq. ymax) THEN
            value = fld3d(2,2,2)
-         ELSE IF (idepth .eq. zmax .and. ilon .eq. xmax) THEN 
-           value = ((1-s)*fld3d(2,2,2)) + (s*fld3d(2,3,2))   
-         ELSE IF (idepth .eq. zmax .and. ilat .eq. ymax) THEN 
+         ELSE IF (idepth .eq. zmax .and. ilon .eq. xmax) THEN
+           value = ((1-s)*fld3d(2,2,2)) + (s*fld3d(2,3,2))
+         ELSE IF (idepth .eq. zmax .and. ilat .eq. ymax) THEN
            value = ((1-r)*fld3d(2,2,2)) + (r*fld3d(3,2,2))
-	     ELSE IF (ilon .eq. xmax .and. ilat .eq. ymax) THEN 
-	       value = ((1-t)*fld3d(2,2,2)) + (t*fld3d(2,2,3))     
+	     ELSE IF (ilon .eq. xmax .and. ilat .eq. ymax) THEN
+	       value = ((1-t)*fld3d(2,2,2)) + (t*fld3d(2,2,3))
 	     ELSE IF (idepth .eq. zmax) THEN
 	       c0 = ((1-r)*fld3d(2,2,2)) + (r*fld3d(3,2,2))
 	       c1 = ((1-r)*fld3d(2,3,2)) + (r*fld3d(3,3,2))
 	       value  = ((1-s)*c0) + (s*c1)
 	     ELSE IF (ilon .eq. xmax) THEN
 	       c0  = ((1-s)*fld3d(2,2,2)) + (s*fld3d(2,3,2))
-	       c1  = ((1-s)*fld3d(2,2,3)) + (s*fld3d(2,3,3)) 
-	       value = ((1-t)*c0) + (t*c1)   
+	       c1  = ((1-s)*fld3d(2,2,3)) + (s*fld3d(2,3,3))
+	       value = ((1-t)*c0) + (t*c1)
 	     ELSE IF (ilat .eq. ymax) THEN
 	       c0  = ((1-r)*fld3d(2,2,2)) + (r*fld3d(3,2,2))
-	       c1  = ((1-r)*fld3d(2,2,3)) + (r*fld3d(3,2,3)) 
+	       c1  = ((1-r)*fld3d(2,2,3)) + (r*fld3d(3,2,3))
 	       value = ((1-t)*c0) + (t*c1)
 	     ELSE
 	       c00 = ((1-r)*fld3d(2,2,2)) + (r*fld3d(3,2,2))
@@ -437,15 +437,21 @@ SUBROUTINE fld3_interp (ilon, ilat, idepth, nlon, nlat, ndepth, fld, &
 	       value = ((1-t)*c0) + (t*c1)
 	     ENDIF
          fail = .false.
-       ELSE 
+       ELSE
 !        no interpolation possible, set value to 0 and failure flag to true
          value = 0
          fail = .true.
+         print *, 'no interpolation possible'
        ENDIF
      ELSE
 !      position is off grid, set value to 0 and failure flag to true
        value = 0
        fail = .true.
+       print *, 'off the grid', ngrid
+       print *, ilon, xmin, xmax
+       print *, ilat, ymin, ymax
+       print *, idepth, zmin, zmax
+       call backtrace()
      ENDIF
    ENDIF  ! 3d fields
  ELSEIF (interpversion .eq. 2) THEN ! New trilinear interpolation
@@ -476,7 +482,7 @@ SUBROUTINE fld2d_interp (ilon, ilat, nlon, nlat, fld, fillvalue, numbergrid, val
  real (kind = real_kind),intent(out)    :: &
      value   !interpolated value
 
- logical (kind=log_kind), intent(out) :: &   
+ logical (kind=log_kind), intent(out) :: &
      fail    !(false) successful interpolation
  integer (kind=int_kind) :: &
      ilon_int, ilat_int, xmin, xmax,n, ymin, ymax
