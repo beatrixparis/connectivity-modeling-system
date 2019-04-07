@@ -231,7 +231,7 @@ SUBROUTINE getphysicaldata(time_t, basedate)
 
 !   call theta to get density, needed only with buoyancy or massSpawning
 !   It is a time-costly calculation, so worth skipping when possible.
-    IF ((buoyancy .or. massSpawning) .and. densExist .eqv. .false.) THEN
+    IF ((buoyancy .or. massSpawning) .and. .not. densExist) THEN
      IF (tempExist .and. salExist) THEN
        CALL calc_dens(nests(i)%temp(:,:,:,fileNumber), &
          nests(i)%saln(:,:,:,fileNumber),nests(i)%dens(:,:,:,fileNumber), &
