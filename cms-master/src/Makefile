@@ -2,6 +2,7 @@
 
 #include ../arch/gfortran_compiler
 include ../arch/mpi_compiler
+#include ../arch/gfortran_prof
 
 .SUFFIXES:
 .SUFFIXES: .cpp .c .F .f .o .f90 .F90
