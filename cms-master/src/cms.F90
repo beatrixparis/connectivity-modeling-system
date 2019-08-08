@@ -2,7 +2,7 @@
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : cms.f90                                                           *
 !* Last Modified: 2016-09-07                                                *
-!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    *
 !*                    Ashwanth Srinivasan                                   *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
@@ -24,14 +24,16 @@
 
 PROGRAM CMS
 
+#ifdef CMS_MPI
  USE MPI !remove if not using mpi
+#endif
  USE globalvariables
  USE mod_random
- 
+
  IMPLICIT NONE
 
  EXTERNAL directory
- 
+
  character(char_len)     :: filenumber
  integer (kind=int_kind) :: ierr, my_id, npes, number1, number2
  logical (kind=log_kind) :: file_exists
@@ -40,11 +42,13 @@ PROGRAM CMS
  npes = 1 !used if not using mpi
 
 !initialise MPI
+#ifdef CMS_MPI
  CALL MPI_INIT(ierr) !remove if not using mpi
 !what processor am I (what is my rank)?
  CALL MPI_COMM_RANK(MPI_COMM_WORLD, my_id, ierr) !remove if not using mpi
 !how many processors are there?
  CALL MPI_COMM_SIZE(MPI_COMM_WORLD, npes, ierr) !remove if not using mpi
+#endif
 
 !check which experiment to run
  IF (command_argument_count() .eq. 0) THEN
@@ -59,8 +63,8 @@ PROGRAM CMS
  number1 = abs(mod((number1*(my_id+1)),31328))
  number2 = abs(mod((number2*(my_id+1)),30081))
  CALL random_initialize (number1,number2)
- 
-!check whether input runconf file exists 
+
+!check whether input runconf file exists
  write(fileinput,'(A,A,A)') 'input_',trim(filenumber), '/'
  INQUIRE(FILE=trim(fileinput)//'runconf.list',EXIST=file_exists)
  IF (file_exists .eqv. .false.) THEN
@@ -88,9 +92,11 @@ PROGRAM CMS
  CALL loop(my_id, npes)
 
 !finish up
- CALL dealloc_all 
+ CALL dealloc_all
 
 !quit MPI
+#ifdef CMS_MPI
  CALL MPI_FINALIZE(ierr) !remove if not using mpi
-     
+#endif
+
 END PROGRAM CMS

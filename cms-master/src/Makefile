@@ -1,15 +1,18 @@
 #
 
+#include ../arch/gfortran_compiler
 include ../arch/mpi_compiler
 
-.SUFFIXES: 
-.SUFFIXES: .cpp .c .F .f .o .f90
+.SUFFIXES:
+.SUFFIXES: .cpp .c .F .f .o .f90 .F90
 
 .F:
 	@echo "Must have an explicit rule for" $*
 .f:
 	@echo "Must have an explicit rule for" $*
 .f90:
+	@echo "Must have an explicit rule for" $*
+.F90:
 	@echo "Must have an explicit rule for" $*
 .c:
 	@echo "Must have an explicit rule for" $*
@@ -21,22 +24,22 @@ MODS =  mod_kinds.o def_constants.o def_nests.o def_particle.o def_globalvariabl
         mod_turb.o mod_strata.o mod_reef.o mod_diffpart.o mod_directory.o mod_mixedlayerphysics.o
 
 OBJS =  input.o output.o restart.o util.o loop.o rungekutta.o findnest.o move.o updateloc.o \
-        getphysicaldata.o getfilename.o getnestinfo.o lonlat2ij.o fldinterp.o dealloc.o cms.o 
+        getphysicaldata.o getfilename.o getnestinfo.o lonlat2ij.o fldinterp.o dealloc.o cms.o
 
-MODS_getdata = mod_kinds.o mod_netcdf.o mod_iounits.o mod_nciorw.o mod_calendar.o mod_directory.o mod_getdata.o 
-        
-OBJS_getdata =  util.o getdata.o 
+MODS_getdata = mod_kinds.o mod_netcdf.o mod_iounits.o mod_nciorw.o mod_calendar.o mod_directory.o mod_getdata.o
+
+OBJS_getdata =  util.o getdata.o
 
 MODS_larva = $(MODS) mod_buoyancy_larva.o mod_mort_larva.o
 OBJS_larva = $(OBJS)
 
 cms	:	$(MODS_larva) $(OBJS_larva)
-	        $(LD) $(MODS_larva) $(OBJS_larva) $(LDFLAGS) -o cms $(EXTRALIBS)	        	       
-	  
+	        $(LD) $(MODS_larva) $(OBJS_larva) $(LDFLAGS) -o cms $(EXTRALIBS)
+
 getdata :	$(MODS_getdata) $(OBJS_getdata)
-		$(LD) $(MODS_getdata) $(OBJS_getdata)  $(LDFLAGS) -o getdata $(EXTRALIBS)	        
-	        
-cms.o: cms.f90
+		$(LD) $(MODS_getdata) $(OBJS_getdata)  $(LDFLAGS) -o getdata $(EXTRALIBS)
+
+cms.o: cms.F90
 getdata.o: getdata.f90
 
 def_nests.o: def_nests.f90
@@ -69,7 +72,7 @@ mod_turb.o: mod_turb.f90
 mod_mort_oil.o: mod_mort_oil.f90
 mod_mort_larva.o: mod_mort_larva.f90
 mod_buoyancy_larva.o: mod_buoyancy_larva.f90
-mod_buoyancy_oil.o: mod_buoyancy_oil.f90 
+mod_buoyancy_oil.o: mod_buoyancy_oil.f90
 mod_reef.o: mod_reef.f90
 mod_calendar.o: mod_calendar.f90
 mod_kinds.o: mod_kinds.f90
@@ -81,5 +84,5 @@ mod_mixedlayerphysics.o: mod_mixedlayerphysics.f90
 mod_getdata.o: mod_getdata.f90
 
 .PHONY: clean
-clean:   
-	rm *.mod *.o cms getdata
+clean:
+	rm -f *.mod *.o cms getdata
