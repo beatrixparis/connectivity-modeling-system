@@ -2,7 +2,7 @@
 !* System: Connectivity Modeling System (CMS)                               *
 !* File : move.f90                                                          *
 !* Last Modified: 2016-09-14                                                *
-!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    * 
+!* Code contributors: Claire B. Paris, Ana Carolina Vaz, Judith Helgers,    *
 !*                    Ashwanth Srinivasan                                   *
 !*                                                                          *
 !* Copyright (C) 2011, University of Miami                                  *
@@ -35,7 +35,7 @@ SUBROUTINE move(startR, endR,time_t)
  integer (kind=int_kind), intent(in) :: startR, endR
  integer (kind=int8_kind), intent(in) :: time_t
 
- integer (kind=int_kind)  :: ngrid, n, r, layerNew 
+ integer (kind=int_kind)  :: ngrid, n, r, layerNew
  integer (kind=int8_kind) :: run_time
  real (kind = real_kind)  :: &
     u1,u2,u3,u4,uf,un, &
@@ -52,15 +52,15 @@ SUBROUTINE move(startR, endR,time_t)
     ztemp,zsaln,zdens, &
     upperdepth, &
     diam, dens, &
-    uturb, vturb, wturb !for turbulence 
- 
+    uturb, vturb, wturb !for turbulence
+
  logical (kind=log_kind)  :: flag(10),landFlag,flagMort
 
  hh=timestep*0.5
  h6=timestep/6.0
  h1 = timestep
  flag= .False.
- 
+
 !repeat for all particles
  DO r=startR, endR
 
@@ -94,16 +94,16 @@ SUBROUTINE move(startR, endR,time_t)
      flag = .False.
 
 !    ================== Runga Kutta Step 1 ==================
-!    check in which nest the particle is     
+!    check in which nest the particle is
      CALL findnest(xold,yold,zold,ngrid,r,n)
-!    IF particle is outside all nests then stop moving 
+!    IF particle is outside all nests then stop moving
      IF (ngrid .eq. -1) THEN
       flag(7) = .True.
       goto 100
-     ENDIF  
+     ENDIF
 
      upperdepth=max(nests(ngrid)%depth(UAx,1),nests(ngrid)%depth(VAx,1),nests(ngrid)%depth(WAx,1))
-     
+
      IF (mixedlayerphysics) THEN
       CALL randdepthinmixedlayer (ngrid,xold,yold,zold,r,n)
      ENDIF
@@ -122,7 +122,7 @@ SUBROUTINE move(startR, endR,time_t)
       flag(2) = .true.
       goto 100
      ENDIF
-      
+
 !    backward
      IF (backward) THEN
       u1 = -1 * u1
@@ -130,14 +130,14 @@ SUBROUTINE move(startR, endR,time_t)
       w1 = -1 * w1
      ENDIF
 
-!    calculate new position      
+!    calculate new position
      CALL updateloc(xold,yold,zold,u1,v1,w1,flag,hh,xtmp1,ytmp1,ztmp1,upperdepth)
 
 !     ================== Runga Kutta Step 2 ==================
 
-!     check in which nest the particle is  
+!     check in which nest the particle is
       CALL findnest(xtmp1,ytmp1,ztmp1,ngrid,r,n)
-!     IF particle is outside all nests then stop moving 
+!     IF particle is outside all nests then stop moving
       IF (ngrid .eq. -1) THEN
         flag(7) = .True.
         goto 100
@@ -160,8 +160,8 @@ SUBROUTINE move(startR, endR,time_t)
        w2 = -1 * w2
       ENDIF
 
-!     calculate new position 
-      CALL updateloc(xold,yold,zold,u2,v2,w2,flag,hh,xtmp2,ytmp2,ztmp2,upperdepth) 
+!     calculate new position
+      CALL updateloc(xold,yold,zold,u2,v2,w2,flag,hh,xtmp2,ytmp2,ztmp2,upperdepth)
 
 !     ================== Runga Kutta Step 3 ==================
 
@@ -186,8 +186,8 @@ SUBROUTINE move(startR, endR,time_t)
        v3 = -1 * v3
        w3 = -1 * w3
       ENDIF
- 
-!     calculate new position 
+
+!     calculate new position
       CALL updateloc(xold,yold,zold,u3,v3,w3,flag,h1,xtmp3,ytmp3,ztmp3,upperdepth)
 
 !     ================== Runga Kutta Step 4 ==================
@@ -196,7 +196,7 @@ SUBROUTINE move(startR, endR,time_t)
       IF (ngrid .eq. -1) THEN
         flag(7) = .True.
         goto 100
-      ENDIF 
+      ENDIF
 
       landFlag = .false.
       CALL rungakutta(ngrid,xtmp3,ytmp3,ztmp3,run_time,diam, &
@@ -212,7 +212,7 @@ SUBROUTINE move(startR, endR,time_t)
        u4 = -1 * u4
        v4 = -1 * v4
        w4 = -1 * w4
-      ENDIF 
+      ENDIF
 
 !     ================== Calculate new position  ==================
 !     best estimate for u,v,w during movement
@@ -220,7 +220,7 @@ SUBROUTINE move(startR, endR,time_t)
       vf=(v1+v4+2.0*(v3+v2))/6.0
       wf=(w1+w4+2.0*(w3+w2))/6.0
 
-!     Adding turb component  
+!     Adding turb component
       IF (turb) THEN
        IF (mod(time_t,turbTimestep) .eq. 0) THEN
         CALL calc_turb(real(timestep),horDiff(ngrid), vertDiff(ngrid),uturb,vturb, wturb)
@@ -233,7 +233,7 @@ SUBROUTINE move(startR, endR,time_t)
        ENDIF
       ENDIF
 
-!     calculate new position 
+!     calculate new position
       CALL updateloc(xold,yold,zold,uf,vf,wf,flag,h1,xnew,ynew,znew,upperdepth)
 
 !     check if new position is inside grid
@@ -243,8 +243,8 @@ SUBROUTINE move(startR, endR,time_t)
         goto 100
       ENDIF
 
-!     Check if new position is on land. If flag avoidcoast is turned on 
-!     then this is not allowed so the particle has to move to a position in not on land 
+!     Check if new position is on land. If flag avoidcoast is turned on
+!     then this is not allowed so the particle has to move to a position in not on land
 !     if particle is on land then check only movement with u and w
 !     if particle is on land then check only movement with v and w
 !     if particle is on land then check only movement with u and v
@@ -252,19 +252,39 @@ SUBROUTINE move(startR, endR,time_t)
       if ((avoidCoast) .or. (znew .gt. 0)) THEN
 !      check if particle is on land
        landFlag = .true.
-       CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, & 
+       CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
             dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
             r,n,grid_i,grid_j,grid_k)
          IF (landFlag .eqv. .true.) THEN
 !         if particle is on land then move particle only with u and w
           CALL updateloc(xold, yold, zold, uf,0.,wf,flag, h1, xnew, ynew, znew,upperdepth)
+
+          !     check if new position is inside grid
+                CALL findnest(xnew,ynew,znew,ngrid,r,n)
+                IF (ngrid .eq. -1) THEN
+                  flag(7) = .True.
+                  goto 100
+                ENDIF
+
+
 !         check if particle is on land
           CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
                dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
                r,n,grid_i,grid_j,grid_k)
+               ! landFlag is cleared above, but flag1 and 2 are being set to True
+
           IF (landFlag .eqv. .true.) THEN
 !          if particle is on land then move particle only with v and w
            CALL updateloc(xold, yold, zold, 0.,vf,wf,flag, h1, xnew, ynew, znew,upperdepth)
+
+           !     check if new position is inside grid
+                 CALL findnest(xnew,ynew,znew,ngrid,r,n)
+                 IF (ngrid .eq. -1) THEN
+                   flag(7) = .True.
+                   goto 100
+                 ENDIF
+
+
 !          check if particle is on land
            CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
                 dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
@@ -272,6 +292,15 @@ SUBROUTINE move(startR, endR,time_t)
            IF (landFlag .eqv. .true.) THEN
 !           if particle is on land then move particle only with u and v
             CALL updateloc(xold, yold, zold, uf,vf,0.,flag, h1, xnew, ynew, znew,upperdepth)
+
+            !     check if new position is inside grid
+                  CALL findnest(xnew,ynew,znew,ngrid,r,n)
+                  IF (ngrid .eq. -1) THEN
+                    flag(7) = .True.
+                    goto 100
+                  ENDIF
+
+
 !           check if particle is on land
             CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
                  dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
@@ -281,6 +310,14 @@ SUBROUTINE move(startR, endR,time_t)
               xnew = xold
               ynew = yold
               znew = zold
+              !     check if new position is inside grid
+                    CALL findnest(xnew,ynew,znew,ngrid,r,n)
+                    IF (ngrid .eq. -1) THEN
+                      flag(7) = .True.
+                      goto 100
+                    ENDIF
+
+
             ENDIF
            ENDIF
           ENDIF
@@ -289,7 +326,7 @@ SUBROUTINE move(startR, endR,time_t)
 
       IF (ibio) THEN
 !      Move particle with vertical matrix
-!      Particle can only go up or down one layer a time step. 
+!      Particle can only go up or down one layer a time step.
        IF (mod(time_t,ibioTimestep) .eq. 0) THEN
         CALL change_layer(run_time,massSpawning,larvaStart,layerNew)
         IF (layerNew .gt. particle(r)%layer(n)) THEN
@@ -302,7 +339,7 @@ SUBROUTINE move(startR, endR,time_t)
              r,n,grid_i,grid_j,grid_k)
          IF (landFlag .eqv. .true.) THEN
 !           if particle is below bottom of the ocean, move one layer up
-            particle(r)%layer(n) = particle(r)%layer(n) - 1 
+            particle(r)%layer(n) = particle(r)%layer(n) - 1
          ENDIF
         ELSE IF (layerNew .lt. particle(r)%layer(n)) THEN
 !        move one layer up
@@ -312,19 +349,25 @@ SUBROUTINE move(startR, endR,time_t)
         particle(r)%ndepth(n) = vertLayers(particle(r)%layer(n))
        ENDIF
       ELSE
-!      else give the particle its new depth position	   
-       particle(r)%ndepth(n)=znew    
+!      else give the particle its new depth position
+       particle(r)%ndepth(n)=znew
       ENDIF
 !     give the particle his new lon and lat position
       particle(r)%nlon(n)=xnew
       particle(r)%nlat(n)=ynew
+      !     check if new position is inside grid
+            CALL findnest(xnew,ynew,znew,ngrid,r,n)
+            IF (ngrid .eq. -1) THEN
+              flag(7) = .True.
+              goto 100
+            ENDIF
 
 !     interpolate temperature onto particle location if required
       IF (outputtemp) THEN
        CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
            dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
            r,n,grid_i,grid_j,grid_k)
-       particle(r)%temp(n)=tn 
+       particle(r)%temp(n)=tn
       ENDIF
 
 !     interpolate salinity onto particle location if required
@@ -332,21 +375,21 @@ SUBROUTINE move(startR, endR,time_t)
        CALL rungakutta(ngrid,xnew,ynew,znew,run_time,diam, &
            dens,1,un,vn,wn,tn,sn,rn,flag,landFlag, &
            r,n,grid_i,grid_j,grid_k)
-       particle(r)%saln(n)=sn 
+       particle(r)%saln(n)=sn
       ENDIF
 
 !     dying particles
       IF (mort) THEN
        flagMort = .false.
        CALL add_mort(h1,particle(r)%halflife(n),flagMort)
-       IF (flagMort .eqv. .true.) THEN     
+       IF (flagMort .eqv. .true.) THEN
          flag(8) = .True.
          goto 100
        ENDIF
       ENDIF
 
 100   particle(r)%flag(n,:) = flag
-  
+
     ENDIF
    ENDDO
   ENDIF

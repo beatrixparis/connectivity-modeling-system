@@ -2,7 +2,7 @@
 //* System: Connectivity Modeling System (CMS)                               *
 //* File : directory.c                                                       *
 //* Last Modified: 2011-07-22                                                *
-//* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris  * 
+//* Code contributors: Judith Helgers, Ashwanth Srinivasan, Claire B. Paris  *
 //*                                                                          *
 //* Copyright (C) 2011, University of Miami                                  *
 //*                                                                          *
@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "mod_directory.h"
 
@@ -44,22 +45,25 @@ void make_dir_(char * filename, int * len_file)
       unlink(file);
       exit(1);
       }
-} 
+}
 
 //copy files from directory dir1 to dir2
 void rename_file_ (char * dir1, char * dir2, int * len_dir1, int * len_dir2)
 {
    int status, errno;
-   char dirOld[*len_dir1];
-   char dirNew[*len_dir2];
+   char dirOld[*len_dir1 + 1];
+   char dirNew[*len_dir2 + 1];
+
+   // printf("In rename_file: %s  %s  %d %d\n", dir1, dir2, *len_dir1, *len_dir2);
 
    substr(dirOld, dir1, 0, *len_dir1);
-   substr(dirNew, dir2, 0, *len_dir2); 
+   substr(dirNew, dir2, 0, *len_dir2);
 
+   // printf("dirOld, dirNew: %s %s\n", dirOld, dirNew);
    status = remove(dirNew);
    status = rename(dirOld, dirNew);
 
-   if (status == -1) 
+   if (status == -1)
    {
     perror("rename Error");
     exit(1);
@@ -67,11 +71,11 @@ void rename_file_ (char * dir1, char * dir2, int * len_dir1, int * len_dir2)
 }
 
 
-substr(char dest[], char src[], int offset, int len)
+void substr(char dest[], char src[], int offset, int len)
 {
   int i;
   for(i = 0; i < len && src[offset + i] != '\0'; i++)
-	dest[i] = src[i + offset];
+        dest[i] = src[i + offset];
   dest[i] = '\0';
 }
 
