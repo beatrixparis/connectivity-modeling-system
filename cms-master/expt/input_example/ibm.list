@@ -5,7 +5,7 @@
 	buoyancyFilename  	= "buoyancy_example"
 	!==============================================================!
 	! Seascape Module
-	polygon		        = .false.
+	polygon		        = .true.
 	polyFilename 	    	= "poly_example.xyz"
 	settlementStart	  	= 2		!in days
 	!==============================================================!
