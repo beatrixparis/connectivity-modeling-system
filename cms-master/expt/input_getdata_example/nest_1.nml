@@ -20,8 +20,8 @@
  	time_step = 86400
  	time_units = "hours" 
  	jdate_yy = 2000
- 	jdate_mm = 1 
- 	jdate_dd = 3
+ 	jdate_mm = 1
+ 	jdate_dd = 1
  	lon_name = "lon"
  	lat_name = "lat" 
  	depth_name = "depth"
@@ -37,6 +37,6 @@
  	saln_name = ""
  	ssh_name = ""
  	angle_file = ""
- 	fill_value = -30
+ 	fill_value = -30000
  	agrid = .true.
 $end
