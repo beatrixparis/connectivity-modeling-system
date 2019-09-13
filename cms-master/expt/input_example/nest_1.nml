@@ -1,8 +1,8 @@
 &nest_input
- xaxis = "lon"
- yaxis = "lat"
- zaxis = "depth"
- taxis = "time"
+ xaxis = "Longitude"
+ yaxis = "Latitude"
+ zaxis = "Depth"
+ taxis = "Time"
  xstart = 275
  xend = 284
  ystart = 23
@@ -21,13 +21,13 @@
  jdate_yy = 2000
  jdate_mm = 1 
  jdate_dd = 1
- lon_name = "lon"
- lat_name = "lat" 
- depth_name = "depth"
+ lon_name = "Longitude"
+ lat_name = "Latitude" 
+ depth_name = "Depth"
  depth_conversion_factor = 1
- time_name = "time"
- uvel_name = "water_u"
- vvel_name = "water_v"
+ time_name = "Time"
+ uvel_name = "zu"
+ vvel_name = "zv"
  wvel_name = ""
  wvel_positive_direction = ""
  velocity_conversion_factor = 1 
