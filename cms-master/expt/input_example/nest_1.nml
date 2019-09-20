@@ -3,9 +3,9 @@
  yaxis = "Latitude"
  zaxis = "Depth"
  taxis = "Time"
- xstart = 275
- xend = 284
- ystart = 23
+ xstart = 270
+ xend = 290
+ ystart = 20
  yend = 30
  zstart = 0
  zend = 0
