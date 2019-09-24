@@ -37,6 +37,6 @@
  	saln_name = ""
  	ssh_name = ""
  	angle_file = ""
- 	fill_value = -30
+ 	fill_value = -30.
  	agrid = .true.
 $end
