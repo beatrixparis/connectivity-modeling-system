@@ -226,9 +226,9 @@ SUBROUTINE move(startR, endR,time_t)
         CALL calc_turb(real(timestep),horDiff(ngrid), vertDiff(ngrid),uturb,vturb, wturb)
         uf = uf + uturb
         vf = vf + vturb
-        IF (wf .ne. 0.) THEN
-         wf = wf + wturb
-        ENDIF
+        !IF (wf .ne. 0.) THEN
+        wf = wf + wturb
+        !ENDIF
 !       print *, "u en v after turb", u,v
        ENDIF
       ENDIF
@@ -291,7 +291,7 @@ SUBROUTINE move(startR, endR,time_t)
 !      Move particle with vertical matrix
 !      Particle can only go up or down one layer a time step. 
        IF (mod(time_t,ibioTimestep) .eq. 0) THEN
-        CALL change_layer(run_time,massSpawning,larvaStart,layerNew)
+        CALL change_layer(run_time,massSpawning,larvaStart,layerNew,particle(r)%layer(n))
         IF (layerNew .gt. particle(r)%layer(n)) THEN
 !        move one layer down
          particle(r)%layer(n) = particle(r)%layer(n) + 1
