@@ -38,7 +38,6 @@ CONTAINS
 
 !**************************************************************
 !Calculate buoyancy component for larva
-!Equation (2), (3) and (4) from Zheng and Yapa(2000)
 subroutine get_buoyancy(dens_water, temp_water, diam_part, dens_part, w2)
 
 real(kind=real_kind), intent(in)  :: &
