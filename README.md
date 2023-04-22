@@ -1,6 +1,6 @@
 # connectivity-modeling-system (CMS), for more information please read and cite Paris et al. 2013EMS
 
-  The CMS is a multiscale stochastic Lagrangian framework developed by Professor Claire B. Paris and her team in the Paris' Lab of the University of Miami's Rosenstiel School of Marine and Atmospheric Science to trace complex planktonic migrations and give probability estimates of dispersion, fate of pollutants, marine population and oceanographic connectivity, and other Lagrangian phenomena. This repository facilitates and encourages COMMUNITY CONTRIBUTIONS TO CMS MODULES.
+  The CMS is a multiscale stochastic Lagrangian framework developed by Professor Claire B. Paris at the Paris' Lab of the University of Miami's Rosenstiel School of Marine, Atmospheric, and Earth Science to trace complex planktonic migrations and give probabilistic estimates of dispersion and migration, marine population and oceanographic connectivity, transport and fate of oil and gas, plastics, and other pollutants, and other Lagrangian phenomena. This repository FACILITATES & ENCOURAGES COMMUNITY CONTRIBUTIONS TO CMS MODULES.
 
 The CMS is an open-source Fortran toolbox for the multi-scale tracking of biotic and abiotic particles in the ocean. The tool is inherently multiscale, allowing for the seamless moving of particles between grids at different resolutions.
 
