@@ -7,3 +7,6 @@ The CMS is an open-source Fortran toolbox for the multi-scale tracking of biotic
 The CMS has been used on velocity fields from OFES, HYCOM, NEMO, MITgcm, UVic, ECCO2, SOSE, MOM and many other ocean models to computation dispersion, connectivity and fate in applications including large scale oceanography, marine reserve planning, and movement of marine biota all across the world.
 
 The CMS uses RK4 timestepping and tricubic interpolation and is designed to be modular, meaning that it is relatively easy to add additional `behaviours' on the particles. Modules distributed with the code include random walk diffusion, mortality, diel migration, and mixed layer mixing. 
+
+CMS Google FORUM
+https://groups.google.com/forum/#!forum/connectivity-modeling-system-club
