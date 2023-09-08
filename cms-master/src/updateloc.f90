@@ -52,16 +52,18 @@ SUBROUTINE updateloc(lon_old,lat_old,depth_old,u,v,w,flag,tmstp,lon_new,lat_new,
    dx=tmstp*u
    dy=tmstp*v
   ENDIF
-  IF (agrid .eqv. .false.) THEN
+!  IF (agrid .eqv. .false.) THEN   ! no reason to link agrid and wvel_positive_direction 
    IF (wvel_positive_direction .eq. 'upward') THEN
     dz=-1.0 * tmstp*w
+   ELSE
+    dz=tmstp*w
    ENDIF
    IF (velocity_conversion_factor .ne. 1) THEN
     dz=dz*velocity_conversion_factor
    ENDIF
-  ELSE
-   dz=tmstp*w
-  ENDIF
+!  ELSE
+!   dz=tmstp*w
+!  ENDIF
 
 ! convert into new lon/lat/depth positions and return these values
   rln1=deg2rad*lon_old
